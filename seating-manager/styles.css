@@ -1,0 +1,539 @@
+:root {
+  --bg-1: #f9f4ea;
+  --bg-2: #d9ecff;
+  --ink: #10243d;
+  --accent: #d86f3d;
+  --accent-2: #2e8b7f;
+  --seat: #f2e8c9;
+  --seat-border: #b39f6f;
+  --seat-selected: #ffd7a6;
+  --seat-filled: #fff5dd;
+  --gender-male: #4f80d8;
+  --gender-female: #da6a95;
+  --gender-unknown: #5f636b;
+  --gender-other: #5f9b77;
+  --card: rgba(255, 255, 255, 0.86);
+  --shadow: 0 12px 30px rgba(16, 36, 61, 0.18);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: "Nanum Gothic", sans-serif;
+  color: var(--ink);
+  min-height: 100vh;
+  background: linear-gradient(130deg, var(--bg-1), var(--bg-2));
+}
+
+.page-bg {
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(circle at 12% 18%, rgba(216, 111, 61, 0.22), transparent 45%),
+    radial-gradient(circle at 84% 12%, rgba(46, 139, 127, 0.2), transparent 40%),
+    radial-gradient(circle at 70% 80%, rgba(16, 36, 61, 0.12), transparent 45%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.app {
+  width: min(1200px, 94vw);
+  margin: 24px auto 36px;
+  display: grid;
+  gap: 14px;
+}
+
+.app-header {
+  background: var(--card);
+  backdrop-filter: blur(4px);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 18px 20px;
+}
+
+.app-header h1 {
+  margin: 0 0 8px;
+  font-family: "Do Hyeon", sans-serif;
+  font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+  letter-spacing: 0.03em;
+}
+
+.app-header p {
+  margin: 0;
+  font-size: 0.98rem;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.btn {
+  border: 0;
+  border-radius: 12px;
+  padding: 10px 14px;
+  font-weight: 800;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.86);
+  box-shadow: 0 6px 14px rgba(16, 36, 61, 0.14);
+  color: var(--ink);
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #f6a35b, var(--accent));
+  color: #fff;
+}
+
+.status {
+  margin: 0;
+  font-weight: 700;
+  min-height: 1.3em;
+}
+
+.layout-wrap,
+.student-panel {
+  background: var(--card);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+
+.print-meta {
+  display: none;
+}
+
+.top-label {
+  text-align: center;
+  font-weight: 800;
+  margin-bottom: 10px;
+}
+
+.classroom {
+  position: relative;
+  padding-bottom: 56px;
+}
+
+.seat-grid {
+  display: grid;
+  grid-template-columns: repeat(11, minmax(0, 1fr));
+  grid-template-rows: repeat(6, 72px);
+  gap: 8px;
+  align-items: stretch;
+}
+
+.seat {
+  border: 2px solid var(--seat-border);
+  background: var(--seat);
+  border-radius: 10px;
+  padding: 6px;
+  text-align: center;
+  line-height: 1.2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.seat:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 12px rgba(16, 36, 61, 0.16);
+}
+
+.seat.empty {
+  background: #fff;
+  border-style: dashed;
+}
+
+.seat.selected {
+  background: var(--seat-selected);
+  outline: 3px solid #e86f2f;
+  box-shadow: 0 0 0 3px rgba(232, 111, 47, 0.28);
+}
+
+.seat.filled {
+  background: var(--seat-filled);
+}
+
+.seat .num {
+  font-size: 0.75rem;
+  font-weight: 700;
+  opacity: 0.8;
+}
+
+.seat .name {
+  font-weight: 800;
+}
+
+.seat .gender {
+  font-size: 0.78rem;
+}
+
+.seat.gender-male {
+  border-color: var(--gender-male);
+  background: linear-gradient(180deg, rgba(79, 128, 216, 0.18), var(--seat-filled));
+}
+
+.seat.gender-female {
+  border-color: var(--gender-female);
+  background: linear-gradient(180deg, rgba(218, 106, 149, 0.18), var(--seat-filled));
+}
+
+.seat.gender-unknown {
+  border-color: var(--gender-unknown);
+  background: linear-gradient(180deg, rgba(95, 99, 107, 0.24), #f0f1f4);
+}
+
+.seat.gender-other {
+  border-color: var(--gender-other);
+  background: linear-gradient(180deg, rgba(95, 155, 119, 0.2), var(--seat-filled));
+}
+
+.seat.gender-male .gender {
+  color: var(--gender-male);
+}
+
+.seat.gender-female .gender {
+  color: var(--gender-female);
+}
+
+.seat.gender-unknown .gender {
+  color: var(--gender-unknown);
+}
+
+.seat.gender-other .gender {
+  color: var(--gender-other);
+}
+
+.teacher,
+.screen {
+  position: absolute;
+  bottom: 6px;
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-weight: 800;
+}
+
+.teacher {
+  left: 25%;
+  transform: translateX(-50%);
+  background: #b7c7e8;
+}
+
+.screen {
+  left: 55%;
+  transform: translateX(-50%);
+  background: #f5efe0;
+}
+
+.student-panel h2 {
+  margin-top: 0;
+  font-family: "Do Hyeon", sans-serif;
+  letter-spacing: 0.02em;
+}
+
+.hint {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 0.92rem;
+}
+
+.subtle-hint {
+  color: #5e6a7e;
+  font-size: 0.84rem;
+}
+
+.editor-card {
+  border: 1.5px solid #d7e1f1;
+  border-radius: 12px;
+  background: #ffffffc9;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+.editor-card h3 {
+  margin: 0 0 10px;
+  font-size: 1rem;
+}
+
+.editor-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 8px;
+}
+
+.editor-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 0.86rem;
+  font-weight: 700;
+}
+
+.editor-grid input,
+.editor-grid select {
+  border: 1.5px solid #c8d5ec;
+  border-radius: 8px;
+  padding: 8px;
+  font: inherit;
+  background: #fff;
+  color: var(--ink);
+}
+
+.editor-actions {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.student-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 8px;
+}
+
+.student-item {
+  border: 1.5px solid #d2dae8;
+  border-radius: 10px;
+  padding: 9px 10px;
+  cursor: pointer;
+  background: #fff;
+  transition: border-color 0.15s ease, transform 0.15s ease;
+}
+
+.student-item-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.student-item-header strong {
+  display: block;
+}
+
+.delete-btn {
+  border: 0;
+  border-radius: 8px;
+  padding: 5px 8px;
+  background: transparent;
+  color: #8d2230;
+  font: inherit;
+  font-size: 0.78rem;
+  /* font-weight: 800; */
+  cursor: pointer;
+  flex: 0 0 auto;
+}
+
+.delete-btn:hover {
+  background: #f1bfc4;
+}
+
+.student-item:hover {
+  transform: translateY(-1px);
+  border-color: #9ab1d8;
+}
+
+.student-item.active {
+  border-color: #d86f3d;
+  background: #fff3e8;
+}
+
+.student-item.editing {
+  border-color: #2e8b7f;
+  background: #eaf8f5;
+}
+
+.student-item.gender-male {
+  border-left: 4px solid var(--gender-male);
+  background: linear-gradient(90deg, rgba(79, 128, 216, 0.15), #fff);
+}
+
+.student-item.gender-female {
+  border-left: 4px solid var(--gender-female);
+  background: linear-gradient(90deg, rgba(218, 106, 149, 0.15), #fff);
+}
+
+.student-item.gender-unknown {
+  border-left: 4px solid var(--gender-unknown);
+  background: linear-gradient(90deg, rgba(95, 99, 107, 0.22), #fff);
+}
+
+.student-item.gender-other {
+  border-left: 4px solid var(--gender-other);
+  background: linear-gradient(90deg, rgba(95, 155, 119, 0.16), #fff);
+}
+
+.student-item .meta {
+  display: block;
+  font-size: 0.82rem;
+  opacity: 0.82;
+  margin-top: 4px;
+}
+
+@media (max-width: 920px) {
+  .seat-grid {
+    grid-template-rows: repeat(6, 68px);
+  }
+
+  .teacher {
+    left: 28%;
+  }
+
+  .screen {
+    left: 60%;
+  }
+}
+
+@media (max-width: 680px) {
+  .app {
+    width: 96vw;
+    margin-top: 14px;
+  }
+
+  .seat-grid {
+    grid-template-rows: repeat(6, 62px);
+    gap: 6px;
+  }
+
+  .seat {
+    padding: 5px;
+  }
+
+  .seat .name {
+    font-size: 0.83rem;
+  }
+
+  .teacher,
+  .screen {
+    position: static;
+    display: inline-block;
+    margin-top: 10px;
+    transform: none;
+  }
+
+  .classroom {
+    padding-bottom: 10px;
+  }
+}
+
+@page {
+  size: A4 landscape;
+  margin: 12mm;
+}
+
+@media print {
+  :root {
+    color-scheme: light;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  body {
+    background: #fff;
+    min-height: auto;
+  }
+
+  .page-bg,
+  .app-header,
+  .controls,
+  .status,
+  .student-panel,
+  .app-header p {
+    display: none !important;
+  }
+
+  .app {
+    width: 100%;
+    margin: 0;
+    gap: 10px;
+  }
+
+  .layout-wrap {
+    background: #fff;
+    box-shadow: none;
+    border: 1px solid #d8dde7;
+    border-radius: 0;
+    padding: 10px;
+  }
+
+  .print-meta {
+    display: block;
+    text-align: center;
+    margin-bottom: 6px;
+  }
+
+  .print-meta h2 {
+    margin: 0;
+    font-family: "Do Hyeon", sans-serif;
+    font-size: 20px;
+    letter-spacing: 0.04em;
+  }
+
+  .print-meta p {
+    margin: 4px 0 0;
+    font-size: 11px;
+  }
+
+  .top-label {
+    margin-bottom: 6px;
+    font-size: 13px;
+  }
+
+  .classroom {
+    padding-bottom: 42px;
+  }
+
+  .seat-grid {
+    grid-template-rows: repeat(6, 56px);
+    gap: 6px;
+  }
+
+  .seat {
+    border-width: 1.5px;
+    border-radius: 8px;
+    padding: 4px;
+    transform: none !important;
+    box-shadow: none !important;
+    break-inside: avoid;
+  }
+
+  .seat.selected {
+    outline-width: 2px;
+  }
+
+  .seat .num {
+    font-size: 10px;
+  }
+
+  .seat .name {
+    font-size: 12px;
+  }
+
+  .seat .gender {
+    font-size: 10px;
+  }
+
+  .teacher,
+  .screen {
+    bottom: 0;
+    padding: 5px 10px;
+    font-size: 11px;
+    border: 1px solid #c6cfdd;
+  }
+}

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>자리배치 프로그램</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Nanum+Gothic:wght@400;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="page-bg" aria-hidden="true"></div>
+
+    <main class="app">
+      <header class="app-header">
+        <h1>자리배치 프로그램</h1>
+        <p>랜덤 셔플과 수동 배치로 교실 좌석을 빠르게 구성하세요.</p>
+      </header>
+
+      <section class="controls" aria-label="좌석 제어">
+        <button id="shuffleBtn" class="btn btn-primary" type="button">랜덤 셔플</button>
+        <button id="manualModeBtn" class="btn" type="button">수동 배치 모드</button>
+        <button id="printBtn" class="btn" type="button">인쇄 / PDF 저장</button>
+        <button id="resetBtn" class="btn" type="button">기본 배치 복원</button>
+        <button id="clearBtn" class="btn" type="button">선택 해제</button>
+      </section>
+
+      <p id="statusText" class="status" aria-live="polite"></p>
+
+      <section class="layout-wrap" aria-label="교실 자리 배치">
+        <div class="print-meta" aria-hidden="true">
+          <h2>자리배치표</h2>
+          <p id="printCaption">출력용 자리표</p>
+        </div>
+        <div class="classroom-meta top-label">뒤쪽 유리창</div>
+
+        <div class="classroom">
+          <div class="seat-grid" id="seatGrid"></div>
+          <div class="teacher">박수현 강사님</div>
+          <div class="screen">앞쪽 스크린</div>
+        </div>
+      </section>
+
+      <section class="student-panel" aria-label="학생 목록">
+        <h2>학생 목록</h2>
+        <p class="hint">
+          기본 화면에서는 좌석 카드 클릭 시 학생 정보를 편집하고, 수동 배치 모드에서는 좌석 카드를 두 번 클릭해 자리 이동/교체가 가능합니다.
+        </p>
+        <p class="hint subtle-hint">
+          학생이 이탈한 경우 목록의 삭제 버튼으로 자리표에서 제외할 수 있습니다.
+        </p>
+
+        <form id="editForm" class="editor-card" aria-label="학생 정보 편집">
+          <h3 id="editorTitle">학생 정보 편집</h3>
+          <div class="editor-grid">
+            <label>
+              번호
+              <input id="editNumber" type="number" min="1" max="999" required />
+            </label>
+            <label>
+              이름
+              <input id="editName" type="text" maxlength="20" required />
+            </label>
+            <label>
+              성별
+              <select id="editGender">
+                <option value="미정">미정</option>
+                <option value="남">남</option>
+                <option value="여">여</option>
+                <option value="기타">기타</option>
+              </select>
+            </label>
+          </div>
+          <div class="editor-actions">
+            <button id="saveStudentBtn" class="btn btn-primary" type="submit">학생 정보 저장</button>
+          </div>
+        </form>
+
+        <ul id="studentList" class="student-list"></ul>
+      </section>
+    </main>
+
+    <script src="script.js"></script>
+  </body>
+</html>
