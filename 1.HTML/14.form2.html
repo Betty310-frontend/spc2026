@@ -1,0 +1,40 @@
+<html>
+  <head></head>
+  <body>
+    <h1>입력폼에 넣을 수 있는 다양한 값</h1>
+    <form action="radio-values" method="GET">
+      <label> <input type="radio" name="subject" value="1" />국어</label>
+      <label> <input type="radio" name="subject" value="2" />영어</label>
+      <label> <input type="radio" name="subject" value="3" />수학</label>
+      <hr />
+
+      <label> <input type="radio" name="drink" value="1" />아메리카노</label>
+      <label> <input type="radio" name="drink" value="2" />카페라떼</label>
+      <label> <input type="radio" name="drink" value="3" />카페모카</label>
+
+      <hr />
+
+      <label><input type="checkbox" name="food" value="1" />김밥</label>
+      <label><input type="checkbox" name="food" value="2" />떡볶이</label>
+      <label><input type="checkbox" name="food" value="3" />순대</label>
+
+      <hr />
+
+      <h2>풀다운 메뉴</h2>
+      <select multiple size="3" name="soda">
+        <option value="1">사이다</option>
+        <option value="2">콜라</option>
+        <option value="3">환타</option>
+        <option value="4">미린다</option>
+      </select>
+
+      <br />
+      <input type="submit" value="제출" />
+    </form>
+
+    <h2>프로그래스바</h2>
+    <progress value="40" max="100"></progress>40%<br />
+    <progress value="60" max="100"></progress>60%<br />
+    <progress value="80" max="100"></progress>80%
+  </body>
+</html>

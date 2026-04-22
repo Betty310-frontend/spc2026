@@ -1,0 +1,38 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.title_wrapper {
+  text-align: center;
+}
+img {
+  width: 80%;
+  height: 200px;
+  margin-bottom: 20px;
+  object-fit: cover;
+  object-position: bottom;
+}
+#calendar {
+  width: 80%;
+  text-align: center;
+  border-collapse: collapse;
+}
+#calendar th {
+  width: 14%;
+}
+#calendar td {
+  padding: 10px;
+  border: 1px solid #ccc;
+}
+#calendar tr > *:first-child {
+  color: #ff4646;
+}
+#calendar tr > *:last-child {
+  color: #4646ff;
+}
+
+.prev-month,
+.next-month {
+  opacity: 0.3;
+}
