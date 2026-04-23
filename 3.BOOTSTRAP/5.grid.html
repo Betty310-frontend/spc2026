@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>5. Grid</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <style></style>
+  </head>
+  <body>
+    <div class="container">
+      <h2 class="text-center my-4">부트스트랩 그리드 예제</h2>
+      <div class="row">
+        <div class="col">Column 1</div>
+        <div class="col">Column 2</div>
+        <div class="col">Column 3</div>
+        <div class="col">Column 4</div>
+        <div class="col">Column 5</div>
+        <div class="col">Column 6</div>
+        <div class="col">Column 7</div>
+        <div class="col">Column 8</div>
+        <div class="col">Column 9</div>
+        <div class="col">Column 10</div>
+        <div class="col">Column 11</div>
+        <div class="col">Column 12</div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-md-4">4칸짜리 열</div>
+        <div class="col-md-8">8칸짜리 열</div>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-4 bg-success-subtle">4칸짜리 열</div>
+        <div class="col-6 bg-danger-subtle">6칸짜리 열</div>
+        <div class="col-8 bg-info-subtle">8칸짜리 열</div>
+      </div>
+    </div>
+
+    <div class="container">
+      <h4 class="text-center my-4">반응형 컨테이너 예제</h4>
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-6">
+        <div class="col text-bg-primary bg-gradient p-3">Box1</div>
+        <div class="col text-bg-secondary bg-gradient p-3">Box2</div>
+        <div class="col text-bg-success bg-gradient p-3">Box3</div>
+        <div class="col text-bg-danger bg-gradient p-3">Box4</div>
+        <div class="col text-bg-warning bg-gradient p-3">Box5</div>
+        <div class="col text-bg-info bg-gradient p-3">Box6</div>
+      </div>
+    </div>
+
+    <div class="container px-0">
+      <h4 class="text-center my-4">더 디테일한 반응형 컨테이너 예제</h4>
+      <div class="d-block d-sm-none text-bg-success py-3 text-center">
+        아주 작은 화면에서만 보입니다. (576 미만)
+      </div>
+      <div class="d-none d-sm-block d-md-none text-bg-primary py-3 text-center">
+        작은 화면에서만 보입니다. (576 이상 768 미만)
+      </div>
+      <div
+        class="d-none d-md-block d-lg-none text-bg-secondary py-3 text-center"
+      >
+        중간 화면에서만 보입니다. (768 이상 992 미만)
+      </div>
+      <div class="d-none d-lg-block d-xl-none text-bg-warning py-3 text-center">
+        큰 화면에서만 보입니다. (992 이상 1200 미만)
+      </div>
+      <div class="d-none d-xl-block text-bg-danger py-3 text-center">
+        아주 큰 화면에서만 보입니다. (1200 이상)
+      </div>
+    </div>
+  </body>
+</html>
