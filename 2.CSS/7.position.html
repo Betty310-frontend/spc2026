@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>7. position</title>
+    <style>
+      div {
+        width: 100px;
+        height: 100px;
+        color: white;
+        background-image: none;
+        background-color: orange;
+        margin: 5px;
+      }
+      .location {
+        background-color: orangered;
+        position: relative;
+        top: 50px;
+        left: 50px;
+      }
+      .image {
+        width: 300px;
+        height: 200px;
+        background-image: url("./images/april.jpg");
+        background-size: 100% 100%;
+        background-position: center;
+        background-repeat: no-repeat;
+      }
+      .image-text {
+        position: relative;
+        top: 50px;
+        left: 50px;
+      }
+    </style>
+  </head>
+  <body>
+    <div>1</div>
+    <div class="location">2</div>
+    <div>3</div>
+    <div class="image">
+      <p class="image-text">벚꽃</p>
+    </div>
+  </body>
+</html>

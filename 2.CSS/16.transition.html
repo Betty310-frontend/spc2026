@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>16 Transition</title>
+    <style>
+      .square {
+        width: 100px;
+        height: 100px;
+        background-color: brown;
+
+        transition-property: width, height;
+        transition-duration: 0.5s;
+        transition-timing-function: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      }
+
+      .square:hover {
+        width: 150px;
+        height: 150px;
+      }
+
+      .button {
+        background-color: white;
+        color: black;
+        transition-property: color;
+        transition-duration: 1s;
+      }
+
+      .button:hover {
+        background-color: black;
+        color: white;
+      }
+
+      .image {
+        width: 300px;
+        height: auto;
+        transition-property: transform;
+        transition-duration: 1s;
+        transform-origin: top left;
+      }
+
+      .image:hover {
+        transform: rotate(360deg);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="square"></div>
+    <br />
+    <button class="button">마우스를 올려보시오</button>
+    <br />
+    <img class="image" src="images/dog.jpg" alt="찹츄" />
+  </body>
+</html>
