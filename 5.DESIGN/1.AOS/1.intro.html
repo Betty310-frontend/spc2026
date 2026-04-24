@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1 Intro</title>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+
+    <style>
+      body {
+        height: 2000px;
+      }
+
+      .box {
+        margin: 100px 0;
+        padding: 40px;
+        background: #ffc7c7;
+        border: 2px solid #ff7373;
+        text-align: center;
+        font-size: 24px;
+      }
+
+      .box:nth-child(3) {
+        background: #c7d1ff;
+        border-color: #7373ff;
+      }
+
+      .box:nth-child(4) {
+        background: #c7ffc7;
+        border-color: #73ff73;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>스크롤 하면서 등장하는 요소들</h1>
+
+    <div class="box" data-aos="fade-up">첫번째 박스</div>
+    <div class="box" data-aos="fade-right">두번째 박스</div>
+    <div class="box" data-aos="zoom-in">세번째 박스</div>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+      AOS.init();
+    </script>
+  </body>
+</html>
