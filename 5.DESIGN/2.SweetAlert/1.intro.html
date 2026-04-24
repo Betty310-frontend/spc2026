@@ -52,6 +52,7 @@
           inputValidator: (value) => {
             if (!value) return "이름을 작성해주세요!";
           },
+          inputPlaceholder: "이름 입력...",
         }).then(({ value }) => {
           if (value)
             Swal.fire(`입력한 이름은 <strong>${value}</strong>입니다.`);
