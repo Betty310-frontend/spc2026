@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>17. Modal 2</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="css/16.modal.css" />
+  </head>
+  <body>
+    <h1 class="text-3xl font-bold my-4">홈페이지 인사말</h1>
+    <p class="my-4">우리 홈페이지 소개 내용</p>
+    <p class="my-4">우리 홈페이지 소개 내용</p>
+    <p class="my-4">우리 홈페이지 소개 내용</p>
+    <button
+      id="openModalBtn"
+      class="inline-block rounded-sm bg-indigo-600 px-8 py-3 my-4 text-sm font-medium text-white transition hover:scale-110 hover:shadow-xl"
+    >
+      모달 열기
+    </button>
+
+    <script>
+      const openModalBtn = document.getElementById("openModalBtn");
+
+      openModalBtn.addEventListener("click", function () {
+        const modalWrapper = document.createElement("div");
+        modalWrapper.classList.add("modal-wrapper");
+
+        modalWrapper.innerHTML = `
+          <div class="modal">
+            <div class="modal-title">안녕하세요.</div>
+            <p>모달에 입력할 내용을 작성</p>
+            <div class="close-wrapper">
+              <button
+                id="closeModalBtn"
+                class="inline-block rounded-sm bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition hover:scale-110 hover:shadow-xl"
+              >
+                닫기
+              </button>
+            </div>
+          </div>
+        `;
+
+        document.body.appendChild(modalWrapper);
+
+        document.getElementById("closeModalBtn").onclick = () => {
+          modalWrapper.remove();
+        };
+
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") {
+            modalWrapper.remove();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

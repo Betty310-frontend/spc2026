@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>9. Change Color</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <h1 id="text" class="text-3xl font-bold my-2">색상 변경 버튼</h1>
+    <button
+      class="group relative inline-block text-sm font-medium text-gray-600"
+      onclick="changeColor()"
+    >
+      <span
+        class="absolute inset-0 translate-x-0.5 translate-y-0.5 bg-gray-600 transition-transform group-hover:translate-x-0 group-hover:translate-y-0"
+      ></span>
+      <span class="relative block border border-current bg-white px-8 py-3">
+        색상 변경
+      </span>
+    </button>
+
+    <script>
+      function changeColor() {
+        const textElem = document.getElementById("text");
+        const bodyElem = document.body;
+
+        const colors = ["red", "green", "blue", "orange", "purple"];
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+        // NOTE: inline style로 색상 변경
+        // if (bodyElem.style.backgroundColor === "") {
+        //   bodyElem.style.backgroundColor = randomColor;
+        // } else {
+        //   bodyElem.style.backgroundColor = "";
+        // }
+
+        // NOTE: classList로 색상 변경
+        const hasBgClass = [...bodyElem.classList].some((cls) =>
+          cls.startsWith("bg-"),
+        );
+        if (hasBgClass) {
+          bodyElem.classList.remove(
+            ...[...bodyElem.classList].filter((cls) => cls.startsWith("bg-")),
+          );
+        } else {
+          bodyElem.classList.add(`bg-${randomColor}-300`);
+        }
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>11. Change Color 3</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <h1 class="text-3xl font-bold my-2">색상 변경 버튼</h1>
+    <p id="current-color"></p>
+    <button
+      class="group relative inline-block text-sm font-medium text-gray-600"
+      onclick="changeColor()"
+    >
+      <span
+        class="absolute inset-0 translate-x-0.5 translate-y-0.5 bg-gray-600 transition-transform group-hover:translate-x-0 group-hover:translate-y-0"
+      ></span>
+      <span class="relative block border border-current bg-white px-8 py-3">
+        색상 변경
+      </span>
+    </button>
+
+    <script>
+      function changeColor() {
+        const bodyElem = document.body;
+        const currentColorElem = document.getElementById("current-color");
+
+        const r = Math.floor(Math.random() * 256);
+        const g = Math.floor(Math.random() * 256);
+        const b = Math.floor(Math.random() * 256);
+
+        // RGB 색상 문자열
+        const rgbColor = `#${[r, g, b].map((v) => v.toString(16).padStart(2, "0")).join("")}`;
+
+        // RGB 불투명도 포함
+        const opacity = (Math.random() * (1 - 0.1) + 0.1).toFixed(2);
+        const rgbaColor = `rgba(${r}, ${g}, ${b}, ${opacity})`;
+
+        // NOTE: inner style로 색상 변경
+        // bodyElem.style.backgroundColor = rgbColor;
+        bodyElem.style.backgroundColor = rgbaColor;
+        currentColorElem.innerText = `현재 색상: ${rgbaColor}`;
+      }
+    </script>
+  </body>
+</html>

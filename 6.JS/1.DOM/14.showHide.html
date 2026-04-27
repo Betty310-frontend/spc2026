@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>14. Show/Hide</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+      #myDiv {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="text-3xl font-bold my-4">Show / Hide</h1>
+    <button
+      class="inline-block rounded-sm bg-indigo-600 px-8 py-3 my-4 text-sm font-medium text-white transition hover:scale-110 hover:shadow-xl"
+      onclick="showHideBugFix()"
+    >
+      숨겨진 요소 토글
+    </button>
+    <div id="myDiv" class="w-[200px] h-[200px] bg-amber-500 transition">
+      이것은 숨겨진 div 요소 입니다.
+    </div>
+    <script>
+      const myDiv = document.querySelector("#myDiv");
+
+      function showHideWithBug() {
+        if (myDiv.style.display === "none") {
+          myDiv.style.display = "block";
+        } else {
+          myDiv.style.display = "none";
+        }
+      }
+
+      function showHideBugFix() {
+        // 실제 style까지 적용된 결과로 연산
+        const displayStyle = window.getComputedStyle(myDiv).display;
+
+        if (displayStyle === "none") {
+          myDiv.style.display = "block";
+        } else {
+          myDiv.style.display = "none";
+        }
+      }
+
+      function toggleVisibility() {
+        myDiv.classList.toggle("opacity-0");
+      }
+    </script>
+  </body>
+</html>

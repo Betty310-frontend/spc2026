@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>10. Change Color 2</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <h1 id="text" class="text-3xl font-bold my-2">색상 변경 버튼</h1>
+    <p id="current-color"></p>
+    <button
+      class="group relative inline-block text-sm font-medium text-gray-600"
+      onclick="changeColor()"
+    >
+      <span
+        class="absolute inset-0 translate-x-0.5 translate-y-0.5 bg-gray-600 transition-transform group-hover:translate-x-0 group-hover:translate-y-0"
+      ></span>
+      <span class="relative block border border-current bg-white px-8 py-3">
+        색상 변경
+      </span>
+    </button>
+
+    <script>
+      const bodyElem = document.body;
+
+      const colors = ["red", "green", "blue", "orange", "purple", "white"];
+      let idx = 0;
+
+      function initChangeColor() {
+        const currentColorElem = document.getElementById("current-color");
+        const currentColor = colors[idx];
+        currentColorElem.innerText = `(인덱스: ${idx}) ${currentColor.toUpperCase()}`;
+
+        bodyElem.classList.add(`bg-${currentColor}-300`);
+
+        idx++;
+      }
+
+      function changeColor() {
+        const textElem = document.getElementById("text");
+        const currentColorElem = document.getElementById("current-color");
+
+        // NOTE: classList로 색상 변경
+        bodyElem.classList.remove(
+          ...[...bodyElem.classList].filter((cls) => cls.startsWith("bg-")),
+        );
+
+        const currentColor = colors[idx];
+        currentColorElem.innerText = `(인덱스: ${idx}) ${currentColor.toUpperCase()}`;
+        bodyElem.classList.add(`bg-${currentColor}-300`);
+        idx = (idx + 1) % colors.length;
+      }
+
+      initChangeColor();
+    </script>
+  </body>
+</html>
