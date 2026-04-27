@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>4. Hello Color</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <h1 id="myHeading" class="text-3xl font-bold text-red-500 my-4">
+      마이 헤딩
+    </h1>
+    <p class="my-4">마이 조금 더 긴 문장</p>
+    <button
+      class="rounded-sm border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600"
+      onclick="changeHeaderColor()"
+    >
+      액션 버튼 1
+    </button>
+    <script>
+      function changeHeaderColor() {
+        const myHeading = document.getElementById("myHeading");
+        // myHeading.textContent = "변경된 헤딩";
+        myHeading.style.color = "blue";
+        myHeading.style.backgroundColor = "yellow";
+        myHeading.style.width = "200px";
+      }
+    </script>
+  </body>
+</html>

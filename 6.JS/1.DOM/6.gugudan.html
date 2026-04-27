@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>6. 구구단</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <h1 class="text-3xl font-bold my-2">구구단 출력기</h1>
+    <div class="relative">
+      <input
+        type="text"
+        id="gugudanInput"
+        class="mt-0.5 w-full rounded border-gray-300 p-2 shadow-sm text-md"
+        placeholder="출력할 단을 입력하세요. ex) 2"
+        onkeypress="if (event.key === 'Enter') printGugudan();"
+      />
+      <span
+        class="absolute inset-y-0 right-2 grid w-content place-content-center"
+      >
+        <button
+          type="button"
+          aria-label="Submit"
+          class="p-1.5 text-gray-700 transition-colors rounded-md border border-gray-300 hover:bg-gray-100"
+          onclick="printGugudan()"
+        >
+          출력
+        </button>
+      </span>
+    </div>
+    <div id="result">
+      <!-- 결과 출력 영역 -->
+    </div>
+    <script>
+      function printGugudan() {
+        // console.log("구구단 출력");
+        const input = document.getElementById("gugudanInput");
+        const inputValue = input.value.trim();
+        const dan = parseInt(inputValue);
+        const result = document.getElementById("result");
+
+        if (isNaN(dan) || dan < 1) {
+          result.innerHTML = `<p class="text-red-500">유효한 숫자를 입력하세요. (1 이상의 정수)</p>`;
+          result.innerHTML += `<p class="text-gray-500 font-bold">입력한 값: ${inputValue}</p>`;
+          input.value = "";
+          return;
+        }
+
+        result.innerHTML = `<h3 class="text-xl font-bold my-2">${dan} 단</h3>`;
+
+        for (let i = 1; i <= 9; i++) {
+          const output = `${dan} × ${i} = ${dan * i}`;
+          result.innerHTML += `<p>${output}</p>`;
+        }
+      }
+    </script>
+  </body>
+</html>

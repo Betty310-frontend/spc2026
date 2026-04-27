@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>7. Buttons</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <h1 class="text-3xl font-bold">버튼 2개</h1>
+
+    <!-- 결과 출력 영역 -->
+    <div id="result" class="text-2xl font-bold my-2">0</div>
+
+    <div class="inline-flex">
+      <button
+        type="button"
+        class="rounded-s-sm border border-gray-200 px-3 py-2 font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-gray-900 focus:z-10 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white focus:outline-none disabled:pointer-events-auto disabled:opacity-50"
+        onclick="updateResult(1)"
+      >
+        +1
+      </button>
+      <button
+        type="button"
+        class="-ms-px rounded-e-sm border border-gray-200 px-3 py-2 font-medium text-gray-700 transition-colors hover:bg-gray-50 hover:text-gray-900 focus:z-10 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-white focus:outline-none disabled:pointer-events-auto disabled:opacity-50"
+        onclick="updateResult(-1)"
+      >
+        -1
+      </button>
+    </div>
+    <script>
+      const result = document.getElementById("result");
+      let resultValue = parseInt(result.textContent);
+
+      function updateResult(value) {
+        resultValue += value;
+        result.innerText = resultValue;
+      }
+    </script>
+  </body>
+</html>

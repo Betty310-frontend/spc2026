@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3. Hello Dom</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <h1>나의 헤딩</h1>
+    <p>여기는 나의 문장이 있는 곳</p>
+    <div id="output">
+      <!-- 여기가 동적으로 컨텐츠를 채울 곳 -->
+    </div>
+    <p>여기는 나의 두번째 문장이 있는 곳</p>
+    <button
+      class="rounded-sm border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white hover:bg-transparent hover:text-indigo-600"
+      onclick="sayHello()"
+    >
+      여기는 나의 버튼
+    </button>
+    <script>
+      function sayHello() {
+        console.log("sayHello");
+        const myoutput = document.getElementById("output");
+        myoutput.textContent = "나의 새로운 동적 문장";
+      }
+    </script>
+  </body>
+</html>
