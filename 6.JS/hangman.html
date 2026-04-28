@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hangman 게임</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Silkscreen:wght@400;700&family=Noto+Sans+KR:wght@300;400;700&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="css/hangman.css" />
+  </head>
+  <body>
+    <div class="game-container">
+      <div class="title">HANGMAN</div>
+      <div class="subtitle">단어 추리 게임</div>
+
+      <!-- MENU SCREEN -->
+      <div id="screen-menu" class="screen active">
+        <p
+          class="menu-label"
+          style="
+            margin-bottom: 40px;
+            font-size: 0.9rem;
+            color: var(--text);
+            letter-spacing: 2px;
+          "
+        >
+          단어 길이를 선택하세요
+        </p>
+        <div class="length-btns">
+          <button id="len-btn-4" class="len-btn">
+            <span>4 <span class="len-sub">LETTERS</span></span>
+          </button>
+          <button id="len-btn-5" class="len-btn">
+            <span>5 <span class="len-sub">LETTERS</span></span>
+          </button>
+          <button id="len-btn-6" class="len-btn">
+            <span>6 <span class="len-sub">LETTERS</span></span>
+          </button>
+        </div>
+      </div>
+
+      <!-- GAME SCREEN -->
+      <div id="screen-game" class="screen">
+        <div class="game-layout">
+          <!-- LEFT: Gallows -->
+          <div>
+            <div class="gallows-panel">
+              <svg viewBox="0 0 180 200" xmlns="http://www.w3.org/2000/svg">
+                <!-- Gallows structure (always visible) -->
+                <line
+                  x1="20"
+                  y1="190"
+                  x2="160"
+                  y2="190"
+                  stroke="#2a2a35"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                />
+                <line
+                  x1="60"
+                  y1="190"
+                  x2="60"
+                  y2="20"
+                  stroke="#2a2a35"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                />
+                <line
+                  x1="60"
+                  y1="20"
+                  x2="120"
+                  y2="20"
+                  stroke="#2a2a35"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                />
+                <line
+                  x1="120"
+                  y1="20"
+                  x2="120"
+                  y2="40"
+                  stroke="#2a2a35"
+                  stroke-width="3"
+                  stroke-linecap="round"
+                />
+
+                <!-- Body parts (id-driven, toggled by JS) -->
+                <!-- Head -->
+                <circle id="hm-head" class="hm-part" cx="120" cy="55" r="15" />
+                <!-- Body -->
+                <line
+                  id="hm-body"
+                  class="hm-part"
+                  x1="120"
+                  y1="70"
+                  x2="120"
+                  y2="120"
+                />
+                <!-- Left arm -->
+                <line
+                  id="hm-arm-l"
+                  class="hm-part"
+                  x1="120"
+                  y1="80"
+                  x2="95"
+                  y2="105"
+                />
+                <!-- Right arm -->
+                <line
+                  id="hm-arm-r"
+                  class="hm-part"
+                  x1="120"
+                  y1="80"
+                  x2="145"
+                  y2="105"
+                />
+                <!-- Left leg -->
+                <line
+                  id="hm-leg-l"
+                  class="hm-part"
+                  x1="120"
+                  y1="120"
+                  x2="95"
+                  y2="155"
+                />
+                <!-- Right leg -->
+                <line
+                  id="hm-leg-r"
+                  class="hm-part"
+                  x1="120"
+                  y1="120"
+                  x2="145"
+                  y2="155"
+                />
+              </svg>
+            </div>
+            <div class="chance-dots" id="chance-dots"></div>
+          </div>
+
+          <!-- RIGHT: Word + lives -->
+          <div class="word-panel">
+            <div>
+              <div class="lives-display">
+                남은 기회: <span id="lives-num">6</span>
+              </div>
+            </div>
+            <div class="hint-area" id="hint-area"></div>
+            <div class="word-blanks" id="word-blanks"></div>
+            <div class="status-msg" id="status-msg">
+              글자를 선택해 단어를 맞춰보세요
+            </div>
+          </div>
+        </div>
+
+        <!-- Used letters -->
+        <div class="used-panel">
+          <div class="used-label">사용한 글자</div>
+          <div class="used-letters" id="used-letters"></div>
+        </div>
+
+        <!-- Keyboard -->
+        <div class="keyboard" id="keyboard"></div>
+
+        <button id="new-game-btn" class="new-game-btn">◀ 새 게임</button>
+      </div>
+    </div>
+
+    <!-- Result Overlay -->
+    <div class="result-overlay" id="result-overlay">
+      <div class="result-box">
+        <div class="result-emoji" id="result-emoji"></div>
+        <div class="result-title" id="result-title"></div>
+        <div class="result-word" id="result-word"></div>
+        <div class="result-sub" id="result-sub"></div>
+        <button id="go-menu-btn" class="new-game-btn" style="margin-top: 0">
+          메인으로 돌아가기
+        </button>
+        <button
+          class="new-game-btn"
+          id="replay-btn"
+          style="
+            margin-top: 10px;
+            border-color: var(--accent3);
+            color: var(--accent3);
+          "
+        >
+          같은 길이로 다시하기
+        </button>
+      </div>
+    </div>
+    <script src="js/hangman.js"></script>
+  </body>
+</html>
