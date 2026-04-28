@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2. Resize</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <h1 class="text-3xl font-bold my-4">당신의 화면 정보는 다음과 같습니다.</h1>
+    <div id="size-info" class="text-2xl bg-gray-200 p-4 m-4 rounded-md"></div>
+    <script>
+      const sizeInfo = document.getElementById("size-info");
+
+      function updateWindowInfo() {
+        const { innerWidth, innerHeight, outerWidth, outerHeight } = window;
+        const { width: screenWidth, height: screenHeight } = screen;
+
+        sizeInfo.innerHTML = `
+          <strong class="my-2">뷰포트 (Viewport) = window.inner</strong><br/>
+          <p>${innerWidth} x ${innerHeight}</p>
+          <strong class="my-2">브라우저 크기 = window.outer</strong><br/>
+          <p>${outerWidth} x ${outerHeight}</p>
+          <strong class="my-2">화면 해상도</strong><br/>
+          <p>${screenWidth} x ${screenHeight}</p>
+        `;
+      }
+      window.addEventListener("resize", updateWindowInfo);
+
+      // 초기 정보 표시
+      window.addEventListener("load", () => {
+        setTimeout(updateWindowInfo, 50);
+      });
+    </script>
+  </body>
+</html>

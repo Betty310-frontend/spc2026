@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1. Event Bubbling</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <h1 class="text-3xl font-bold my-4">이벤트 버블링 예제</h1>
+
+    <div id="grandparent" class="p-10 bg-gray-100">
+      Grandparent
+      <div id="parent" class="p-10 bg-sky-200">
+        Parent
+        <div id="child" class="p-10 bg-yellow-300">Child</div>
+      </div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const grandparent = document.getElementById("grandparent");
+        const parent = document.getElementById("parent");
+        const child = document.getElementById("child");
+
+        child.addEventListener("click", (event) => {
+          event.stopPropagation(); // 이벤트 버블링 중지
+          alert("Child clicked");
+        });
+
+        parent.addEventListener("click", (event) => {
+          event.stopPropagation(); // 이벤트 버블링 중지
+          alert("Parent clicked");
+        });
+
+        grandparent.addEventListener("click", (event) => {
+          event.stopPropagation(); // 이벤트 버블링 중지
+          alert("Grandparent clicked");
+        });
+      });
+    </script>
+  </body>
+</html>

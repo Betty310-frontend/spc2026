@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1. Image Gallery</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <h1 class="text-3xl font-bold my-4">이미지 갤러리</h1>
+    <div
+      class="gallery w-full p-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 overflow-hidden"
+    >
+      <!-- 이미지를 클릭하면 확대 -->
+      <img
+        class="h-64 w-full object-cover transition duration-500 hover:scale-105 sm:h-72"
+        src="images/capybara1.png"
+        alt="카피바라 1"
+      />
+      <img
+        class="h-64 w-full object-cover transition duration-500 hover:scale-105 sm:h-72"
+        src="images/capybara2.jpg"
+        alt="카피바라 2"
+      />
+      <img
+        class="h-64 w-full object-cover transition duration-500 hover:scale-105 sm:h-72"
+        src="images/capybara3.jpg"
+        alt="카피바라 3"
+      />
+    </div>
+
+    <div id="large-image"></div>
+    <script>
+      const largeImageContainer = document.getElementById("large-image");
+      const images = document
+        .getElementsByClassName("gallery")[0]
+        .getElementsByTagName("img");
+
+      function closeLargeImage() {
+        largeImageContainer.innerHTML = "";
+      }
+
+      for (let img of images) {
+        img.addEventListener("click", () => {
+          largeImageContainer.innerHTML = `
+              <div class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50">
+                <img src="${img.src}" alt="${img.alt}" class="max-w-full max-h-full rounded-lg shadow-lg p-4">
+                <button class="absolute top-4 right-4 text-white text-2xl font-bold" onclick="closeLargeImage()">×</button>
+              </div>
+            `;
+        });
+      }
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeLargeImage();
+        }
+      });
+    </script>
+  </body>
+</html>

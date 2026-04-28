@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>4. Context Menu</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <button
+      type="button"
+      id="my-button"
+      class="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600"
+    >
+      클릭하세요.
+    </button>
+    <script>
+      const myButton = document.getElementById("my-button");
+
+      myButton.addEventListener("contextmenu", (ev) => {
+        ev.preventDefault(); // 기본 컨텍스트 메뉴 방지
+        console.log("컨텍스트 메뉴 방지!");
+      });
+
+      document.addEventListener("contextmenu", (ev) => {
+        ev.preventDefault();
+        console.log("사이트 전체에서 컨텍스트 메뉴 방지");
+      });
+    </script>
+  </body>
+</html>

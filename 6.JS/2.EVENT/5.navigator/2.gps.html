@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2. GPS Info</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <h1 class="text-3xl font-bold my-4">당신의 GPS 정보는 다음과 같습니다.</h1>
+    <button
+      type="button"
+      id="location-btn"
+      class="bg-blue-500 text-white px-4 py-2 rounded-md"
+    >
+      위치 정보 가져오기
+    </button>
+    <p id="location-info" class="text-xl my-2"></p>
+
+    <script>
+      const locationBtn = document.getElementById("location-btn");
+      const locationInfo = document.getElementById("location-info");
+
+      locationBtn.addEventListener("click", () => {
+        navigator.geolocation.getCurrentPosition((position) => {
+          const { latitude, longitude } = position.coords;
+          locationInfo.innerHTML = `
+            <p><strong class="my-2">Latitude</strong><br/>${latitude}</p>
+            <p><strong class="my-2">Longitude</strong><br/>${longitude}</p>
+          `;
+        });
+      });
+    </script>
+  </body>
+</html>

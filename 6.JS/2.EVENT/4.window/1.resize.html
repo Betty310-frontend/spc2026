@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1. Resize</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <div id="text"></div>
+    <script>
+      window.addEventListener("resize", () => {
+        const { innerWidth, innerHeight } = window;
+        document.getElementById("text").textContent =
+          `창 크기 변경: X - ${innerWidth}, Y - ${innerHeight}`;
+      });
+    </script>
+  </body>
+</html>

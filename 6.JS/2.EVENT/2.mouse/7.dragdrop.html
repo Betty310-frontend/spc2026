@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>7. Drag Drop</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+      #drag-item {
+        width: 100px;
+        height: 100px;
+        background-color: #ffcc00;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        z-index: 1;
+      }
+
+      .drop-container {
+        width: 200px;
+        height: 200px;
+        background-color: #f0f0f0;
+        border: 2px dashed #cccccc;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        margin-bottom: 20px;
+      }
+
+      .placeholder {
+        position: absolute;
+        color: #999;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="start-zone" class="drop-container">
+      <span class="placeholder" id="start_placeholder">Drop Here</span>
+      <div id="drag-item" draggable="true">Drag Me</div>
+    </div>
+    <div id="drop-zone" class="drop-container">
+      <span class="placeholder" id="drop-placeholder">Drop Here</span>
+    </div>
+    <script>
+      const startZone = document.getElementById("start-zone");
+      const dropZone = document.getElementById("drop-zone");
+      const dragItem = document.getElementById("drag-item");
+
+      const zoneList = [startZone, dropZone];
+
+      zoneList.forEach((zone) => {
+        zone.addEventListener("dragstart", () => {
+          console.log(`${zone.id}에서 드래그 시작`);
+        });
+
+        zone.addEventListener("dragover", (ev) => {
+          ev.preventDefault();
+          console.log(`${zone.id} 위에 있음`);
+        });
+
+        zone.addEventListener("drop", (ev) => {
+          ev.preventDefault();
+          console.log(`${zone.id}에 드롭되었습니다!`);
+          zone.appendChild(dragItem);
+        });
+      });
+
+      //   dragItem.addEventListener("dragstart", (ev) => {
+      //     ev.dataTransfer.setData("text/plain", "This is the dragged item.");
+      //     console.log("드래그가 시작되었습니다.");
+      //   });
+
+      //   startZone.addEventListener("dragover", (ev) => {
+      //     ev.preventDefault();
+      //     console.log("startZone 위에 있음");
+      //   });
+
+      //   startZone.addEventListener("drop", (ev) => {
+      //     ev.preventDefault();
+      //     console.log("startZone에 드롭되었습니다!");
+      //     startZone.appendChild(dragItem);
+      //   });
+
+      //   dropZone.addEventListener("dragover", (ev) => {
+      //     ev.preventDefault();
+      //     console.log("dropZone 위에 있음");
+      //   });
+
+      //   dropZone.addEventListener("drop", (ev) => {
+      //     ev.preventDefault();
+      //     console.log("dropZone에 드롭되었습니다!");
+      //     dropZone.appendChild(dragItem);
+      //   });
+    </script>
+  </body>
+</html>
