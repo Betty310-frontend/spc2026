@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>18. Progress</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <h1 class="text-3xl font-bold my-4">프로그래스바</h1>
+    <input
+      type="number"
+      id="time-input"
+      class="border border-gray-300 rounded-md p-2 w-64 inline-block"
+      placeholder="시간(초)를 입력하세요."
+      min="1"
+      max="10"
+    />
+    <button
+      type="button"
+      id="start-btn"
+      class="inline-block rounded-sm bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition cursor-pointer hover:scale-110 hover:shadow-xl disabled:cursor-not-allowed disabled:bg-gray-400 disabled:text-gray-700"
+      onclick="startProgress()"
+    >
+      시작
+    </button>
+
+    <button
+      type="button"
+      class="inline-block rounded-sm border border-indigo-600 px-4 py-2 text-sm font-medium text-indigo-600 transition cursor-pointer hover:scale-110 hover:shadow-xl"
+      onclick="clearProgress()"
+    >
+      초기화
+    </button>
+
+    <div
+      id="progress-bar"
+      class="w-[80%] bg-yellow-300 mx-auto my-4 rounded-md overflow-hidden"
+    >
+      <div id="progress" class="w-[0%] h-[30px] bg-amber-600">
+        <span id="progress-text" class="text-white px-2">0%</span>
+      </div>
+    </div>
+
+    <script>
+      let timeId;
+
+      const timeInput = document.getElementById("time-input");
+      const progressText = document.getElementById("progress-text");
+      const startBtn = document.getElementById("start-btn");
+
+      function startProgress() {
+        const duration = parseInt(timeInput.value);
+        const progressElem = document.getElementById("progress");
+
+        let elapsed = 0;
+
+        startBtn.disabled = true;
+
+        timeId = setInterval(() => {
+          elapsed++;
+          //  NOTE: 진행률 계산
+          const ratio = (elapsed / duration) * 100;
+          progressText.textContent = `${Math.floor(ratio)}%`;
+
+          progressElem.style.width = `${ratio}%`;
+          if (elapsed >= duration) {
+            clearInterval(timeId);
+            startBtn.disabled = false;
+          }
+        }, 1000);
+      }
+
+      function clearProgress() {
+        clearInterval(timeId);
+        const progressElem = document.getElementById("progress");
+        progressElem.style.width = "0%";
+        progressText.textContent = "0%";
+        timeInput.value = "";
+        startBtn.disabled = false;
+      }
+    </script>
+  </body>
+</html>

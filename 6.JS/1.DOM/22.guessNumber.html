@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>22. Guess Number</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <h1 class="text-3xl font-bold my-4">숫자 맞추기 게임</h1>
+    <h2 class="text-2xl font-bold my-4">1~100 까지의 숫자를 맞춰보세요.</h2>
+    <input
+      type="number"
+      id="guess-number"
+      placeholder="숫자를 입력하세요."
+      class="border border-gray-300 rounded-md p-2 w-64 inline-block"
+      min="1"
+      max="100"
+    />
+    <button
+      id="guess-btn"
+      class="inline-block rounded-sm bg-gray-600 px-4 py-2 text-sm font-medium text-white transition cursor-pointer hover:scale-110 hover:shadow-xl disabled:cursor-not-allowed disabled:bg-gray-400 disabled:text-gray-700"
+      onclick="checkGuess()"
+    >
+      Guess
+    </button>
+    <p id="result"></p>
+    <script>
+      const randomNum = Math.floor(Math.random() * 100) + 1; // 1 ~ 100 사이의 랜덤 숫자 생성
+      const guessInput = document.getElementById("guess-number");
+      const result = document.getElementById("result");
+
+      console.log(randomNum);
+
+      function checkGuess() {
+        const userGuessValue = parseInt(guessInput.value);
+
+        if (
+          isNaN(userGuessValue) ||
+          userGuessValue < 1 ||
+          userGuessValue > 100
+        ) {
+          alert("1에서 100 사이의 유요한 숫자를 입력해주세요.");
+          return;
+        }
+
+        if (userGuessValue === randomNum) {
+          result.textContent = "축하합니다! 정답입니다.";
+          result.classList.remove("text-blue-500", "text-red-500");
+          result.classList.add("text-green-500");
+        } else if (userGuessValue < randomNum) {
+          result.textContent = "입력한 숫자보다 큽니다.";
+          result.classList.remove("text-green-500", "text-red-500");
+          result.classList.add("text-blue-500");
+        } else if (userGuessValue > randomNum) {
+          result.textContent = "입력한 숫자보다 작습니다.";
+          result.classList.remove("text-green-500", "text-blue-500");
+          result.classList.add("text-red-500");
+        }
+      }
+    </script>
+  </body>
+</html>

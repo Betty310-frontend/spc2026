@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>21. Count Down 2</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <h1 class="text-3xl font-bold my-4">카운트다운</h1>
+    <input
+      type="number"
+      id="time-input"
+      class="border border-gray-300 rounded-md p-2 w-64 inline-block"
+      placeholder="시간(초)를 입력하세요."
+      min="1"
+    />
+    <button
+      type="button"
+      class="inline-block rounded-sm bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition cursor-pointer hover:scale-110 hover:shadow-xl disabled:cursor-not-allowed disabled:bg-gray-400 disabled:text-gray-700"
+      onclick="startTimer()"
+    >
+      시작
+    </button>
+    <button
+      type="button"
+      class="inline-block rounded-sm bg-red-600 px-4 py-2 text-sm font-medium text-white transition cursor-pointer hover:scale-110 hover:shadow-xl disabled:cursor-not-allowed disabled:bg-gray-400 disabled:text-gray-700"
+      onclick="stopTimer()"
+    >
+      중지
+    </button>
+    <button
+      type="button"
+      class="inline-block rounded-sm bg-gray-600 px-4 py-2 text-sm font-medium text-white transition cursor-pointer hover:scale-110 hover:shadow-xl disabled:cursor-not-allowed disabled:bg-gray-400 disabled:text-gray-700"
+      onclick="resetTimer()"
+    >
+      리셋
+    </button>
+    <div id="timer-container"></div>
+    <script>
+      // 입력값 가져오기
+      // setInterval로 매초 카운트 다운
+      // 남은 초를 DOM > p 태그에 표시
+      // 시간이 만료됐으면, 끝났다고 출력
+
+      let timeId;
+      const timeInput = document.getElementById("time-input");
+      const timerContainer = document.getElementById("timer-container");
+
+      function startTimer() {
+        const inputValue = timeInput.value;
+        const counter = { value: parseInt(inputValue) };
+        const timerDisplay = document.createElement("p");
+
+        if (isNaN(counter.value) || counter.value <= 0) {
+          alert("유효한 시간을 입력하세요.");
+          return;
+        }
+
+        timerDisplay.textContent = `남은 시간: ${counter.value}`;
+
+        timeId = setInterval(() => {
+          counter.value -= 1;
+          if (counter.value > 0) {
+            timerDisplay.textContent = `남은 시간: ${counter.value}`;
+          } else {
+            timerDisplay.textContent = "시간이 만료되었습니다!";
+            clearInterval(timeId);
+          }
+        }, 1000);
+
+        timerContainer.appendChild(timerDisplay);
+      }
+
+      function stopTimer() {
+        clearInterval(timeId);
+      }
+
+      function resetTimer() {
+        clearInterval(timeId);
+        timeInput.value = "";
+        timerContainer.innerHTML = "";
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1. Click</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <button
+      type="button"
+      id="my-button"
+      class="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600"
+    >
+      클릭하세요.
+    </button>
+    <script>
+      const myButton = document.getElementById("my-button");
+      myButton.addEventListener("click", () => {
+        console.log("버튼이 클릭되었습니다!");
+      });
+    </script>
+  </body>
+</html>

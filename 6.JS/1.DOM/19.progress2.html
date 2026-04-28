@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>18. Progress</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <h1 class="text-3xl font-bold my-4">프로그래스바</h1>
+    <input
+      type="number"
+      id="time-input"
+      class="border border-gray-300 rounded-md p-2 w-64 inline-block"
+      placeholder="시간(초)를 입력하세요."
+      min="1"
+      max="10"
+    />
+    <button
+      type="button"
+      id="start-btn"
+      class="inline-block rounded-sm bg-indigo-600 px-4 py-2 text-sm font-medium text-white transition cursor-pointer hover:scale-110 hover:shadow-xl disabled:cursor-not-allowed disabled:bg-gray-400 disabled:text-gray-700"
+    >
+      시작
+    </button>
+
+    <button
+      type="button"
+      id="reset-btn"
+      class="inline-block rounded-sm border border-indigo-600 px-4 py-2 text-sm font-medium text-indigo-600 transition cursor-pointer hover:scale-110 hover:shadow-xl"
+    >
+      초기화
+    </button>
+
+    <div
+      id="progress-bar"
+      class="w-[80%] bg-yellow-100 mx-auto my-4 rounded-md overflow-hidden"
+    >
+      <div
+        id="progress"
+        class="w-[2px] h-[30px] bg-linear-65 from-purple-500 to-pink-500 transition-[width]"
+      >
+        <span id="progress-text" class="text-white px-2">0%</span>
+      </div>
+    </div>
+
+    <div
+      class="fixed top-0 right-0 ml-auto max-w-md p-6 hidden"
+      id="error-message"
+    >
+      <div
+        role="alert"
+        class="rounded-md border border-red-500 bg-red-50 p-4 shadow-sm"
+      >
+        <div class="flex items-start gap-4">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            class="-mt-0.5 size-6 text-red-700"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"
+            ></path>
+          </svg>
+
+          <div class="flex-1">
+            <strong class="block leading-tight font-medium text-red-800">
+              Error
+            </strong>
+
+            <p class="mt-0.5 text-sm text-red-700">
+              유효한 시간(초)을 입력하세요.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="js/19.progress.js"></script>
+  </body>
+</html>

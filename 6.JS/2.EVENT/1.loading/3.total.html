@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3. Total Load</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script>
+      console.log("0. head 태그 안의 스크립트가 실행된 시점");
+    </script>
+    <!-- <script defer>
+      console.log(
+        "5. defer 속성이 있는 스크립트가 실행된 시점 (DOM이 완전히 로드된 후)",
+      );
+    </script> -->
+  </head>
+  <body>
+    <script>
+      console.log("1. body 태그 안의 스크립트가 실행된 시점");
+
+      const myTitle = document.getElementById("title");
+      console.log("myTitle:", myTitle); // null이 출력될 수 있음 (DOM이 아직 로드되지 않았기 때문)
+    </script>
+
+    <h1 id="title">마이 타이틀</h1>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        // HTML에 대한 DOM 로딩이 완료된 시점 (CSS, 이미지 등은 아직 로드되지 않을 수 있음)
+        console.log("3. DOM이 완전히 로드되고 분석되었습니다.");
+
+        const myTitle = document.getElementById("title");
+        console.log("myTitle:", myTitle);
+      });
+
+      window.addEventListener("load", () => {
+        console.log("4.모든 리소스 (html/css/js/img 등) 완전히 로드된 시점");
+      });
+    </script>
+    <script>
+      console.log("2. body 태그 안의 스크립트가 실행된 시점");
+    </script>
+  </body>
+</html>

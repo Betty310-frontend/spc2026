@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3. Click Buttons</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <button
+      type="button"
+      id="my-button"
+      class="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600"
+    >
+      클릭하세요.
+    </button>
+    <script>
+      const myButton = document.getElementById("my-button");
+      myButton.addEventListener("click", () => {
+        console.log("버튼이 클릭되었습니다!");
+      });
+
+      myButton.addEventListener("mousedown", (event) => {
+        const buttonType = (() => {
+          switch (event.button) {
+            case 0:
+              return "왼쪽 버튼";
+            case 1:
+              return "휠 버튼";
+            case 2:
+              return "오른쪽 버튼";
+            default:
+              return "🤷 알 수 없는 버튼";
+          }
+        })(); // 0: 왼쪽 버튼, 1: 휠 버튼, 2: 오른쪽 버튼
+        console.log(`마우스 버튼이 눌렸습니다: ${buttonType}`);
+      });
+    </script>
+  </body>
+</html>

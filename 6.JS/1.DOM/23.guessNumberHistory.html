@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>23. Guess Number History</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <h1 class="text-3xl font-bold my-4">숫자 맞추기 게임</h1>
+    <h2 class="text-2xl font-bold my-4">1~100 까지의 숫자를 맞춰보세요.</h2>
+    <input
+      type="number"
+      id="guess-number"
+      placeholder="숫자를 입력하세요."
+      class="border border-gray-300 rounded-md p-2 w-64 inline-block"
+      min="1"
+      max="100"
+    />
+    <button
+      id="guess-btn"
+      class="inline-block rounded-sm bg-gray-600 px-4 py-2 text-sm font-medium text-white transition cursor-pointer hover:scale-110 hover:shadow-xl disabled:cursor-not-allowed disabled:bg-gray-400 disabled:text-gray-700"
+      onclick="checkGuess()"
+    >
+      Guess
+    </button>
+    <p id="result" class="text-xl font-semibold"></p>
+    <div
+      id="history-container"
+      class="w-1/2 mt-4 border-2 border-black bg-white p-4 shadow-[4px_4px_0_0] hover:bg-yellow-100 focus:ring-2 focus:ring-yellow-300 focus:outline-0 sm:p-6"
+    >
+      <h3 class="mt-1 text-xl font-semibold">숫자 맞추기 게임 히스토리</h3>
+      <ul id="history-list" class="list-disc list-inside"></ul>
+    </div>
+    <script>
+      const randomNum = Math.floor(Math.random() * 100) + 1; // 1 ~ 100 사이의 랜덤 숫자 생성
+      const guessInput = document.getElementById("guess-number");
+      const result = document.getElementById("result");
+      const historyList = document.getElementById("history-list");
+
+      let attempts = 1;
+
+      console.log(randomNum);
+
+      function checkGuess() {
+        const userGuessValue = parseInt(guessInput.value);
+
+        if (
+          isNaN(userGuessValue) ||
+          userGuessValue < 1 ||
+          userGuessValue > 100
+        ) {
+          alert("1에서 100 사이의 유요한 숫자를 입력해주세요.");
+          return;
+        }
+
+        if (userGuessValue === randomNum) {
+          result.textContent = "축하합니다! 정답입니다.";
+          result.classList.remove("text-blue-500", "text-red-500");
+          result.classList.add("text-green-500");
+        } else if (userGuessValue < randomNum) {
+          result.textContent = "정답보다 작습니다.";
+          result.classList.remove("text-green-500", "text-red-500");
+          result.classList.add("text-blue-500");
+        } else if (userGuessValue > randomNum) {
+          result.textContent = "정답보다 큽니다.";
+          result.classList.remove("text-green-500", "text-blue-500");
+          result.classList.add("text-red-500");
+        }
+
+        const historyItem = document.createElement("li");
+        const historyItemContent =
+          userGuessValue === randomNum
+            ? "<span class='text-green-500'>정답!</span>"
+            : userGuessValue < randomNum
+              ? "<span class='text-blue-500'>작음</span>"
+              : "<span class='text-red-500'>큼</span>";
+
+        historyItem.innerHTML = `<span class="font-semibold">시도 ${attempts}:</span> ${userGuessValue} (${historyItemContent})`;
+        historyList.appendChild(historyItem);
+
+        if (userGuessValue === randomNum) {
+          guessInput.disabled = true;
+          alert(`축하합니다. ${attempts}번 만에 맞추셨습니다!`);
+          return;
+        }
+        attempts++;
+      }
+
+      guessInput.addEventListener("keypress", function (event) {
+        if (event.key === "Enter") {
+          checkGuess();
+          guessInput.value = "";
+        }
+      });
+    </script>
+  </body>
+</html>
