@@ -336,12 +336,21 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Keyboard input
   document.addEventListener("keydown", (e) => {
-    const letter = e.key.toUpperCase();
-    if (
-      /^[A-Z]$/.test(letter) &&
-      document.getElementById("screen-game").classList.contains("active")
-    ) {
-      guess(letter);
+    if (e.isComposing || e.key === "Process") return;
+
+    const screenEl = document.getElementById("screen-game");
+    if (!screenEl || !screenEl.classList.contains("active")) return;
+
+    let letter = (e.key || "").toUpperCase();
+
+    if (!/^[A-Z]$/.test(letter)) {
+      if (/^Key[A-Z]$/.test(e.code)) {
+        letter = e.code.slice(3);
+      } else {
+        return;
+      }
     }
+
+    guess(letter);
   });
 });
