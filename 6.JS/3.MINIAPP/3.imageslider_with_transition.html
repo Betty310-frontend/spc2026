@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3. Image Slider with Transition</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <h1 class="text-3xl font-bold text-center my-4">
+      3. Image Slider with Transition
+    </h1>
+    <div class="slider text-center">
+      <div
+        id="img-container"
+        class="w-full max-w-sm mt-4 mx-auto overflow-hidden relative"
+      >
+        <div
+          id="slide-track"
+          class="flex transition-transform duration-500 ease-in-out"
+        >
+          <article
+            class="shrink-0 overflow-hidden rounded-lg shadow-sm transition hover:shadow-lg"
+          >
+            <img
+              class="inline-block w-full min-h-[400px] object-cover"
+              src="images/capybara1.png"
+              alt="Capybara 1"
+            />
+
+            <div class="bg-white p-4 sm:p-6">
+              <h3 class="filename mt-0.5 text-lg text-gray-900"></h3>
+            </div>
+          </article>
+
+          <article
+            class="shrink-0 overflow-hidden rounded-lg shadow-sm transition hover:shadow-lg"
+          >
+            <img
+              class="inline-block w-full min-h-[400px] object-cover"
+              src="images/capybara2.jpg"
+              alt="Capybara 2"
+            />
+
+            <div class="bg-white p-4 sm:p-6">
+              <h3 class="filename mt-0.5 text-lg text-gray-900"></h3>
+            </div>
+          </article>
+
+          <article
+            class="shrink-0 overflow-hidden rounded-lg shadow-sm transition hover:shadow-lg"
+          >
+            <img
+              class="inline-block w-full min-h-[400px] object-cover"
+              src="images/capybara3.jpg"
+              alt="Capybara 3"
+            />
+
+            <div class="bg-white p-4 sm:p-6">
+              <h3 class="filename mt-0.5 text-lg text-gray-900"></h3>
+            </div>
+          </article>
+        </div>
+      </div>
+
+      <div class="buttons flex gap-2 mt-4 w-full max-w-3xs mx-auto">
+        <button
+          id="prev-btn"
+          class="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer flex-1 hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
+        >
+          Previous
+        </button>
+        <button
+          id="next-btn"
+          class="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer flex-1 hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed"
+        >
+          Next
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const articles = document.querySelectorAll("#img-container article");
+      const slideTrack = document.getElementById("slide-track");
+      const filenameDisplay = document.getElementsByClassName("filename");
+      const prevBtn = document.getElementById("prev-btn");
+      const nextBtn = document.getElementById("next-btn");
+
+      let currentIdx = 0;
+
+      slideTrack.style.width = `${articles.length * 100}%`;
+      articles.forEach((article) => {
+        article.style.width = `${100 / articles.length}%`;
+      });
+
+      articles.forEach((article, i) => {
+        const filename = article.querySelector("img").src.split("/").pop();
+        filenameDisplay[i].textContent = filename;
+      });
+
+      function showImage(currentIdx) {
+        const offset = (100 / articles.length) * currentIdx;
+        slideTrack.style.transform = `translateX(-${offset}%)`;
+
+        if (currentIdx === 0) {
+          prevBtn.disabled = true;
+        } else {
+          prevBtn.disabled = false;
+        }
+
+        if (currentIdx === articles.length - 1) {
+          nextBtn.disabled = true;
+        } else {
+          nextBtn.disabled = false;
+        }
+
+        // articles.forEach((article, i) => {
+        //   article.classList.toggle("hidden", i !== currentIdx);
+        // });
+      }
+
+      // NOTE: 슬라이드 양 끝에서 disabled 버전
+      prevBtn.addEventListener("click", () => {
+        if (currentIdx > 0) {
+          currentIdx--;
+          showImage(currentIdx);
+        }
+      });
+
+      nextBtn.addEventListener("click", () => {
+        if (currentIdx < articles.length - 1) {
+          currentIdx++;
+          showImage(currentIdx);
+        }
+      });
+
+      // NOTE: 초기 이미지 표시
+      showImage(currentIdx);
+    </script>
+  </body>
+</html>
