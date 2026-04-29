@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2. TTS Voice</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <h1 class="text-3xl font-bold my-3">2. TTS Voice</h1>
+    <textarea
+      name=""
+      id="text"
+      rows="4"
+      cols="50"
+      class="border rounded-sm resize-none p-2"
+    >
+Hello, this is a simple text-to-speech example using JavaScript. You can type any text here and it will be spoken aloud when you click the button below.
+    </textarea>
+    <div class="controls flex items-center gap-2 mt-3">
+      <!-- 브라우저로부터 음성 목록을 가져와서 출력할 곳 -->
+      <select
+        id="voice-select"
+        class="border border-gray-300 p-2 rounded"
+      ></select>
+      <button
+        type="button"
+        class="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer"
+        onclick="speak()"
+      >
+        읽어주기
+      </button>
+    </div>
+    <script>
+      const voiceSelect = document.getElementById("voice-select");
+
+      // Web Speech API
+      function populateVoiceList() {
+        if (typeof window.speechSynthesis === "undefined") {
+          alert("이 브라우저는 Web Speech API를 지원하지 않습니다.");
+          return;
+        }
+
+        const voices = window.speechSynthesis.getVoices();
+        voiceSelect.innerHTML = ""; // 기존 옵션 제거
+        voices.forEach((voice, index) => {
+          const option = document.createElement("option");
+          option.value = index;
+          option.textContent = `${voice.name} (${voice.lang})`;
+          voiceSelect.appendChild(option);
+        });
+      }
+
+      function speak() {
+        const text = document.getElementById("text").value;
+        const speech = new SpeechSynthesisUtterance(text);
+        const selectedVoiceIndex = voiceSelect.value;
+        const voices = window.speechSynthesis.getVoices();
+        if (voices[selectedVoiceIndex]) {
+          speech.voice = voices[selectedVoiceIndex];
+        }
+        window.speechSynthesis.speak(speech);
+      }
+
+      // 음성 목록이 변경될 때마다 업데이트
+      window.speechSynthesis.onvoiceschanged = populateVoiceList;
+      populateVoiceList();
+    </script>
+  </body>
+</html>

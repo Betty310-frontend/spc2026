@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1. TTS Simple</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <h1 class="text-3xl font-bold my-3">1. TTS Simple</h1>
+    <div class="flex items-end gap-2">
+      <textarea
+        name=""
+        id="text"
+        rows="4"
+        cols="50"
+        class="border rounded-sm resize-none p-2"
+      >
+Hello, this is a simple text-to-speech example using JavaScript. You can type any text here and it will be spoken aloud when you click the button below.
+    </textarea
+      >
+      <button
+        type="button"
+        class="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer"
+        onclick="speak()"
+      >
+        읽어주기
+      </button>
+    </div>
+    <script>
+      function speak() {
+        const text = document.getElementById("text").value;
+        const speech = new SpeechSynthesisUtterance(text);
+        window.speechSynthesis.speak(speech);
+      }
+    </script>
+  </body>
+</html>
