@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>1. Intro</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <canvas
+      id="my-canvas"
+      class="border border-gray-600 w-[500px] h-[500px]"
+    ></canvas>
+    <script>
+      const canvas = document.getElementById("my-canvas");
+      const context = canvas.getContext("2d");
+
+      // 사각형 그리기
+      context.fillStyle = "#ff0000";
+      context.fillRect(0, 0, 200, 50); // x, y, width, height
+
+      context.fillStyle = "#0000ff";
+      context.fillRect(0, 50, 200, 50); // x, y, width, height
+
+      // 라인 그리기
+      context.strokeStyle = "#00ff00";
+      context.lineWidth = 2;
+      context.beginPath();
+
+      // 상단 중앙 시작, 우측 중앙 끝
+      context.moveTo(100, 0);
+      context.lineTo(200, 50);
+
+      // 우측 중앙 시작, 하단 중앙 끝
+      context.moveTo(200, 50);
+      context.lineTo(100, 100);
+
+      // 하단 중앙 시작, 좌측 중앙 끝
+      context.moveTo(100, 100);
+      context.lineTo(0, 50);
+
+      // 좌측 중앙 시작, 상단 중앙 끝
+      context.moveTo(0, 50);
+      context.lineTo(100, 0);
+
+      context.stroke();
+      context.closePath();
+
+      // 원 그리기
+      // NOTE: 0 radian은 오른쪽에서 출발하고, 1/2 π radian은 90도, π radian은 180도, 3/2 π radian은 270도, 2π radian은 360도
+      context.fillStyle = "#ffff00";
+      context.beginPath();
+      context.arc(350, 50, 30, 0, 2 * Math.PI); // x, y, radius, startAngle, endAngle
+      context.fill();
+      context.closePath();
+
+      context.fillStyle = "#000000";
+      context.beginPath();
+      context.arc(350, 50, 30, (1 / 2) * Math.PI, (3 / 2) * Math.PI); // x, y, radius, startAngle, endAngle
+      context.fill();
+      context.closePath();
+    </script>
+  </body>
+</html>

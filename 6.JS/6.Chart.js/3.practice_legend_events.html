@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3. Practice Legend Events</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="./utils/index.js"></script>
+  </head>
+  <body>
+    <div class="flex flex-col items-center">
+      <canvas id="my-canvas" width="800" height="800"></canvas>
+    </div>
+
+    <script>
+      const ctx = document.getElementById("my-canvas");
+
+      const data = {
+        labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+        datasets: [
+          {
+            label: "# of Votes",
+            data: [12, 19, 3, 5, 2, 3],
+            borderWidth: 1,
+            backgroundColor: [
+              "#CB4335",
+              "#1F618D",
+              "#F1C40F",
+              "#27AE60",
+              "#884EA0",
+              "#D35400",
+            ],
+          },
+        ],
+      };
+
+      function handleHover(evt, item, legend) {
+        legend.chart.data.datasets[0].backgroundColor.forEach(
+          (color, index, colors) => {
+            colors[index] =
+              index === item.index || color.length === 9 ? color : color + "4D";
+          },
+        );
+        legend.chart.update();
+      }
+
+      function handleLeave(evt, item, legend) {
+        legend.chart.data.datasets[0].backgroundColor.forEach(
+          (color, index, colors) => {
+            colors[index] = color.length === 9 ? color.slice(0, -2) : color;
+          },
+        );
+        legend.chart.update();
+      }
+
+      const config = {
+        type: "pie",
+        data: data,
+        options: {
+          responsive: false,
+          plugins: {
+            legend: {
+              onHover: handleHover,
+              onLeave: handleLeave,
+              labels: {
+                boxWidth: 40,
+                boxHeight: 24,
+                padding: 24,
+                font: {
+                  size: 16,
+                },
+              },
+            },
+          },
+        },
+      };
+
+      new Chart(ctx, config);
+    </script>
+  </body>
+</html>

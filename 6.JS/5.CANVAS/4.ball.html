@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>4. Ball</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <canvas
+      id="ani-canvas"
+      width="400"
+      height="200"
+      class="border border-gray-600"
+    ></canvas>
+    <script>
+      const canvas = document.getElementById("ani-canvas");
+      const context = canvas.getContext("2d");
+
+      let x = 50;
+      let y = 50;
+      let radius = 10;
+      let dx = 5; // x축 속도
+      let dy = 3; // y축 속도
+
+      function drawBall() {
+        context.clearRect(0, 0, canvas.width, canvas.height); // 캔버스 초기화
+
+        context.beginPath();
+        context.arc(x, y, radius, 0, 2 * Math.PI); // x, y, radius, startAngle, endAngle
+        context.fillStyle = "#0000ff";
+        context.fill();
+        context.closePath();
+
+        // 공이 x축 벽에 닿으면 x방향만 반전
+        if (x + radius >= canvas.width || x - radius <= 0) {
+          dx = -dx;
+        }
+
+        // 공이 y축 벽에 닿으면 y방향만 반전
+        if (y + radius >= canvas.height || y - radius <= 0) {
+          dy = -dy;
+        }
+
+        x += dx;
+        y += dy;
+
+        requestAnimationFrame(drawBall);
+      }
+
+      drawBall();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2. Face</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <canvas
+      id="my-canvas"
+      class="border border-gray-600"
+      width="400"
+      height="300"
+    ></canvas>
+    <script>
+      const canvas = document.getElementById("my-canvas");
+      const context = canvas.getContext("2d");
+
+      context.beginPath();
+      context.arc(75, 75, 50, 0, 2 * Math.PI); // x, y, radius, startAngle, endAngle
+
+      // 왼쪽 눈
+      context.moveTo(65, 65);
+      context.arc(60, 65, 5, 0, 2 * Math.PI);
+
+      // 오른쪽 눈
+      context.moveTo(100, 65);
+      context.arc(95, 65, 5, 0, 2 * Math.PI);
+
+      // 입 (반원)
+      context.moveTo(110, 75);
+      context.arc(75, 75, 35, 0, Math.PI);
+
+      context.stroke();
+      context.closePath();
+
+      // 팩맨
+      context.beginPath();
+      context.moveTo(300, 100);
+
+      let startAngle = (1 / 4) * Math.PI;
+      let endAngle = 2 * Math.PI - (1 / 4) * Math.PI;
+      context.arc(300, 100, 50, startAngle, endAngle);
+      context.lineTo(300, 100);
+
+      context.fillStyle = "#ffff00";
+      context.fill();
+
+      context.stroke();
+      context.closePath();
+
+      //   팩맨 2
+      context.beginPath();
+      context.moveTo(300, 210);
+      startAngle = (1 / 6) * Math.PI;
+      endAngle = 2 * Math.PI - startAngle;
+      context.arc(300, 210, 50, startAngle, endAngle);
+      context.lineTo(300, 210);
+
+      context.fillStyle = "#ffff00";
+      context.fill();
+
+      context.stroke();
+      context.closePath();
+    </script>
+  </body>
+</html>

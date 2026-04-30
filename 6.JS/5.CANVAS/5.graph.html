@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>5. Graph</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <canvas
+      id="ani-canvas"
+      width="400"
+      height="200"
+      class="border border-gray-600"
+    ></canvas>
+    <script>
+      const canvas = document.getElementById("ani-canvas");
+      const context = canvas.getContext("2d");
+
+      const graphData = {
+        A: 10,
+        B: 20,
+        C: 40,
+        D: 60,
+        E: 100,
+      };
+
+      let x = 50;
+      const barHeightOffset = 20;
+
+      function drawBarGraph(data) {
+        const barWidth = 30;
+
+        for (const key in data) {
+          const barHeight = data[key];
+
+          context.fillStyle = "blue";
+          context.fillRect(
+            x,
+            canvas.height - barHeight - barHeightOffset,
+            barWidth,
+            barHeight,
+          );
+
+          context.fillStyle = "black";
+          context.fillText(key, x + barWidth / 2, canvas.height - 10);
+          x += barWidth + 10; // 막대 사이 간격
+        }
+      }
+
+      drawBarGraph(graphData);
+    </script>
+  </body>
+</html>

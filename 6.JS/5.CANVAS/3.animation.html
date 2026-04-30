@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>3. Animation</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <canvas
+      id="ani-canvas"
+      width="400"
+      height="200"
+      class="border border-gray-600"
+    ></canvas>
+    <script>
+      const canvas = document.getElementById("ani-canvas");
+      const context = canvas.getContext("2d");
+
+      let x = 50;
+
+      function draw() {
+        context.clearRect(0, 0, canvas.width, canvas.height); // 캔버스 초기화
+
+        context.fillStyle = "#ff0000";
+        context.fillRect(x, 50, 50, 50); // x, y, width, height
+
+        if (x > canvas.width) {
+          x = -50; // 사각형이 캔버스를 벗어나면 다시 왼쪽에서 시작
+        }
+        x += 5;
+        requestAnimationFrame(draw);
+      }
+
+      draw();
+    </script>
+  </body>
+</html>
