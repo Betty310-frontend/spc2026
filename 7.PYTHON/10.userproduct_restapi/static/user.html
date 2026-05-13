@@ -26,8 +26,7 @@
       </button>
     </form>
 
-    <!-- 특정 사용자 조회 시 ID 표시 -->
-    <p class="text-gray-500">사용자 ID: <span id="user-id-display"></span></p>
+    <p id="user-id-display" class="text-gray-500 hidden"></p>
 
     <div class="overflow-x-auto">
       <table class="min-w-full divide-y-2 divide-gray-200">
@@ -38,41 +37,81 @@
             <th class="px-3 py-2 whitespace-nowrap">Email</th>
           </tr>
         </thead>
-
-        <tbody class="divide-y divide-gray-200 *:even:bg-gray-50">
-          <tr class="*:text-gray-900 *:first:font-medium">
-            <td class="px-3 py-2 whitespace-nowrap">
-              <a href="/users/{{ user.id }}" class="block">{{ user.id }}</a>
-            </td>
-            <td class="px-3 py-2 whitespace-nowrap">{{ user.name }}</td>
-            <td class="px-3 py-2 whitespace-nowrap">{{ user.email }}</td>
-          </tr>
-          <tr>
-            <td colspan="3" class="px-3 py-2 text-center text-gray-500">
-              해당 사용자가 없습니다.
-            </td>
-          </tr>
-        </tbody>
+        <tbody
+          id="user-table-body"
+          class="divide-y divide-gray-200 *:even:bg-gray-50"
+        ></tbody>
       </table>
     </div>
+
     <script>
+      // URL에서 user_id 추출: /users/<id> 형태
+      const pathParts = window.location.pathname.split("/").filter(Boolean);
+      const userId =
+        pathParts[0] === "users" && pathParts[1] ? pathParts[1] : null;
+
+      // 입력창에 현재 user_id 미리 채움
+      if (userId) {
+        document.getElementById("user_id").value = userId;
+        const display = document.getElementById("user-id-display");
+        display.textContent = `사용자 ID: ${userId}`;
+        display.classList.remove("hidden");
+      }
+
+      // API 호출 후 테이블 렌더링
+      async function loadUsers() {
+        const url = userId ? `/api/users/${userId}` : "/api/users";
+        const tbody = document.getElementById("user-table-body");
+
+        try {
+          const res = await fetch(url);
+          const data = await res.json();
+
+          const noUserMessage = `<tr><td colspan="3" class="px-3 py-2 text-center text-gray-500">해당 사용자가 없습니다.</td></tr>`;
+
+          if (!res.ok) {
+            tbody.innerHTML = noUserMessage;
+            return;
+          }
+
+          const users = Array.isArray(data.result)
+            ? data.result
+            : [data.result];
+
+          if (users.length === 0) {
+            tbody.innerHTML = noUserMessage;
+            return;
+          }
+
+          tbody.innerHTML = users
+            .map(
+              (user) => `
+            <tr class="*:text-gray-900 *:first:font-medium">
+              <td class="px-3 py-2 whitespace-nowrap">
+                <a href="/users/${user.id}" class="block">${user.id}</a>
+              </td>
+              <td class="px-3 py-2 whitespace-nowrap">${user.name}</td>
+              <td class="px-3 py-2 whitespace-nowrap">${user.email}</td>
+            </tr>
+          `,
+            )
+            .join("");
+        } catch (error) {
+          console.error("Error fetching users:", error);
+        }
+      }
+
+      loadUsers();
+
       document
         .getElementById("user-search-form")
-        .addEventListener("submit", async (event) => {
+        .addEventListener("submit", function (event) {
           event.preventDefault();
-
-          const userId = document.getElementById("user_id").value;
-          const baseUrl = "/api/users";
-
-          try {
-            const res = await fetch(`${baseUrl}/${userId}`);
-
-            if (res.ok) {
-              const data = await res.json();
-              console.log(data);
-            }
-          } catch (error) {
-            console.error("Error fetching user:", error);
+          const inputId = document.getElementById("user_id").value.trim();
+          if (inputId) {
+            window.location.href = `/users/${inputId}`;
+          } else {
+            window.location.href = "/users";
           }
         });
     </script>

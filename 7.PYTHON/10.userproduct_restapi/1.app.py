@@ -42,7 +42,8 @@ def index():
     return send_from_directory('static', 'index.html')
 
 @app.route('/users')
-def users_page():
+@app.route('/users/<int:user_id>')
+def users_page(user_id=None):
     return send_from_directory('static', 'user.html')
 
 @app.route('/products')
@@ -69,15 +70,15 @@ def api_get_products():
     product_id = request.args.get('id', type=int)
     product_name = request.args.get('name', type=str)
 
-    if product_id:
+    if product_id is not None:
         product = products.get(product_id)
         if product:
             return jsonify({"result": product})
         else:
             return jsonify({"error": "Not found"}), 404
 
-    if product_name:
-        filtered_products = [p for p in products.values() if p['name'].startswith(product_name)]
+    if product_name is not None:
+        filtered_products = [p for p in products.values() if product_name in p['name']]
         if filtered_products:
             return jsonify({"result": filtered_products})
         else:
@@ -86,4 +87,4 @@ def api_get_products():
     return jsonify({"result": list(products.values())})
 
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True, host='0.0.0.0', port=8000)
