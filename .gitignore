@@ -52,3 +52,5 @@ Thumbs.db
 # pnpm-lock.yaml
 
 __pycache__/
+
+uploads/

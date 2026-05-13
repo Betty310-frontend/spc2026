@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flask Login Form</title>
+  </head>
+  <body>
+    <h1>Flask Login Form</h1>
+    <form action="/login" method="post">
+      <label for="id">ID: </label>
+      <input
+        type="text"
+        id="id"
+        name="id"
+        placeholder="아이디를 입력하세요."
+        required
+      />
+      <br />
+      <label for="password">Password: </label>
+      <input
+        type="password"
+        id="password"
+        name="password"
+        placeholder="비밀번호를 입력하세요."
+        required
+      />
+      <br />
+      <button type="submit">Login</button>
+    </form>
+  </body>
+</html>
