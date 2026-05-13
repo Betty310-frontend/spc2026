@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User 페이지</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <div><a href="/">뒤로 가기</a></div>
+    <h1 class="text-3xl font-bold my-3">User 페이지</h1>
+
+    <form id="user-search-form">
+      <input
+        id="user_id"
+        type="text"
+        name="id"
+        placeholder="사용자 ID 입력"
+        class="border rounded px-2 py-1"
+      />
+      <button
+        type="submit"
+        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+      >
+        조회
+      </button>
+    </form>
+
+    <!-- 특정 사용자 조회 시 ID 표시 -->
+    <p class="text-gray-500">사용자 ID: <span id="user-id-display"></span></p>
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y-2 divide-gray-200">
+        <thead class="ltr:text-left rtl:text-right">
+          <tr class="*:font-medium *:text-gray-900">
+            <th class="px-3 py-2 whitespace-nowrap">ID</th>
+            <th class="px-3 py-2 whitespace-nowrap">Name</th>
+            <th class="px-3 py-2 whitespace-nowrap">Email</th>
+          </tr>
+        </thead>
+
+        <tbody class="divide-y divide-gray-200 *:even:bg-gray-50">
+          <tr class="*:text-gray-900 *:first:font-medium">
+            <td class="px-3 py-2 whitespace-nowrap">
+              <a href="/users/{{ user.id }}" class="block">{{ user.id }}</a>
+            </td>
+            <td class="px-3 py-2 whitespace-nowrap">{{ user.name }}</td>
+            <td class="px-3 py-2 whitespace-nowrap">{{ user.email }}</td>
+          </tr>
+          <tr>
+            <td colspan="3" class="px-3 py-2 text-center text-gray-500">
+              해당 사용자가 없습니다.
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <script>
+      document
+        .getElementById("user-search-form")
+        .addEventListener("submit", async (event) => {
+          event.preventDefault();
+
+          const userId = document.getElementById("user_id").value;
+          const baseUrl = "/api/users";
+
+          try {
+            const res = await fetch(`${baseUrl}/${userId}`);
+
+            if (res.ok) {
+              const data = await res.json();
+              console.log(data);
+            }
+          } catch (error) {
+            console.error("Error fetching user:", error);
+          }
+        });
+    </script>
+  </body>
+</html>

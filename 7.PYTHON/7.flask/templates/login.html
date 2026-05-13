@@ -10,8 +10,10 @@
     <p>안녕하세요, {{ name }}님!</p>
     <h2>사진 업로드</h2>
     <form action="/upload" method="post" enctype="multipart/form-data">
-      <input type="file" name="file" />
+      <input type="file" name="file" accept="image/*" />
       <button type="submit">업로드</button>
     </form>
+
+    <img src="/images/사진1.jpg" alt="강아지 사진" />
   </body>
 </html>

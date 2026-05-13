@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Flask Static Example</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <h1 class="text-3xl font-bold underline">Flask Static Example</h1>
+    <p class="text-xl my-3">
+      이것은 귀여운 강아지 입니다. 짱 귀여움 진짜 귀여움 너무 귀여움
+    </p>
+    <img
+      src="{{ url_for('static', filename='img/사진1.jpg') }}"
+      alt="Dog Image"
+      class="w-1/2 h-auto mt-4"
+    />
+    <script></script>
+  </body>
+</html>

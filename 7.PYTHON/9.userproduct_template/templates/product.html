@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product 페이지</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <div><a href="/">뒤로 가기</a></div>
+    <h1 class="text-3xl font-bold my-3">Product 페이지</h1>
+
+    <form id="product-search-form">
+      <input
+        type="text"
+        name="id"
+        placeholder="상품 정보 입력"
+        class="border rounded px-2 py-1"
+        value="{{request.args.get('id', '') or request.args.get('name', '')}}"
+      />
+      <button
+        type="submit"
+        class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+      >
+        조회
+      </button>
+    </form>
+
+    {% if product_id %}
+    <p class="text-gray-500">상품 ID: {{ product_id }}</p>
+    {% endif %} {% if product_name %}
+    <p class="text-gray-500">상품 이름: {{ product_name }}</p>
+    {% endif %}
+
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y-2 divide-gray-200">
+        <thead class="ltr:text-left rtl:text-right">
+          <tr class="*:font-medium *:text-gray-900">
+            <th class="px-3 py-2 whitespace-nowrap">ID</th>
+            <th class="px-3 py-2 whitespace-nowrap">Name</th>
+            <th class="px-3 py-2 whitespace-nowrap">Price</th>
+          </tr>
+        </thead>
+
+        <tbody class="divide-y divide-gray-200 *:even:bg-gray-50">
+          {% if products %} {% for product in products %}
+          <tr class="*:text-gray-900 *:first:font-medium">
+            <td class="px-3 py-2 whitespace-nowrap">
+              <a href="/products?id={{ product.id }}" class="block">
+                {{ product.id }}
+              </a>
+            </td>
+            <td class="px-3 py-2 whitespace-nowrap">
+              <a href="/products?name={{ product.name }}" class="block">
+                {{ product.name }}
+              </a>
+            </td>
+            <td class="px-3 py-2 whitespace-nowrap">
+              {{ "{:,}".format(product.price) }}
+            </td>
+          </tr>
+          {% endfor %} {% else %}
+          <tr>
+            <td colspan="3" class="px-3 py-2 text-center text-gray-500">
+              해당 상품이 없습니다.
+            </td>
+          </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+    <script>
+      document
+        .getElementById("product-search-form")
+        .addEventListener("submit", function (event) {
+          event.preventDefault();
+          const keyword = this.id.value;
+          if (keyword) {
+            window.location.href = isNaN(keyword)
+              ? `/products?name=${keyword}`
+              : `/products?id=${keyword}`;
+          } else {
+            window.location.href = "/products";
+          }
+        });
+    </script>
+  </body>
+</html>
