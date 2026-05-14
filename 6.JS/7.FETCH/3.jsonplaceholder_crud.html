@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fetch 3. JsonPlaceholder CRUD</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <h1 class="text-3xl font-bold">외부 요청 테스트</h1>
+    <input
+      type="text"
+      id="post_id"
+      class="px-4 py-2 border border-gray-500 rounded"
+      placeholder="포스트 ID를 입력하세요."
+    />
+    <button
+      id="load"
+      class="mt-4 px-4 py-2 bg-blue-500 text-white rounded cursor-pointer hover:bg-blue-600"
+    >
+      데이터 요청
+    </button>
+    <button
+      id="save"
+      class="mt-4 px-4 py-2 bg-green-500 text-white rounded cursor-pointer hover:bg-green-600"
+    >
+      데이터 쓰기
+    </button>
+    <div id="result" class="mt-4"></div>
+    <script>
+      const postIdInput = document.getElementById("post_id");
+      const saveButton = document.getElementById("save");
+      const loadButton = document.getElementById("load");
+      const resultDiv = document.getElementById("result");
+
+      const url = "https://jsonplaceholder.typicode.com/posts";
+
+      async function fetchData() {
+        const postId = postIdInput.value.trim();
+        const fetchUrl = postId ? `${url}/${postId}` : url;
+
+        try {
+          const response = await fetch(fetchUrl);
+          const data = await response.json();
+
+          if (Array.isArray(data)) {
+            resultDiv.innerHTML = data
+              .slice(0, 5)
+              .map(
+                (
+                  post,
+                ) => `<div class="mb-2 p-4 border rounded hover:bg-gray-50">
+                        <div class="flex justify-between items-center mb-2">
+                            <h2>데이터 ID: ${post.id}</h2>
+                            <span class="cursor-pointer p-2">❌</span>
+                        </div>
+                        <h3 class="font-bold text-xl mb-2">${post.title}</h3>
+                        <p>${post.body.length > 100 ? `${post.body.slice(0, 100)}...` : post.body}</p>
+                    </div>`,
+              )
+              .join("");
+          } else {
+            resultDiv.innerHTML = `<div class="p-4 border rounded bg-gray-50">
+                    <div class="flex justify-between items-center mb-2">
+                        <h2>데이터 ID: ${data.id}</h2>
+                        <span class="cursor-pointer p-2">❌</span>
+                    </div>
+                    <h3 class="font-bold text-xl mb-2">${data.title}</h3>
+                    <p>${data.body}</p>
+                </div>`;
+          }
+        } catch (error) {
+          resultDiv.textContent = `오류: ${error}`;
+        }
+      }
+
+      async function postData() {
+        const postData = {
+          userId: 1,
+          title: "Hello World",
+          body: "lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+        };
+
+        try {
+          const response = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json; charset=UTF-8",
+            },
+            body: JSON.stringify(postData),
+          });
+          const data = await response.json();
+          resultDiv.innerHTML = `<div class="p-4 border rounded bg-gray-50">
+                <div class="flex justify-between items-center mb-2">
+                    <h2>생성된 데이터 ID: ${data.id}</h2>
+                    <span class="cursor-pointer p-2">❌</span>
+                </div>
+                <h3 class="font-bold text-xl mb-2">${data.title}</h3>
+                <p>${data.body}</p>
+            </div>`;
+        } catch (error) {
+          resultDiv.textContent = `오류: ${error}`;
+        }
+      }
+
+      async function deleteData(postId) {
+        try {
+          await fetch(`${url}/${postId}`, {
+            method: "DELETE",
+          });
+          console.log(
+            `데이터 ID ${postId}가 삭제되었습니다. (실제 API에서는 삭제되지 않음)`,
+          );
+        } catch (error) {
+          console.error(`오류: ${error}`);
+        }
+      }
+
+      //   GET
+      loadButton.addEventListener("click", fetchData);
+      // POST
+      saveButton.addEventListener("click", postData);
+
+      // DELETE
+      resultDiv.addEventListener("click", (event) => {
+        if (event.target.textContent === "❌") {
+          const postId = event.target
+            .closest("div")
+            .querySelector("h2")
+            .textContent.split(": ")[1];
+          deleteData(postId);
+          resultDiv.removeChild(event.target.closest("div"));
+        }
+      });
+    </script>
+  </body>
+</html>

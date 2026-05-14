@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fetch JsonPlaceholder Users</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <h1 class="text-3xl font-bold">JsonPlaceholder Users</h1>
+    <form>
+      <input
+        type="text"
+        id="user_id"
+        class="px-4 py-2 border border-gray-500 rounded"
+        placeholder="사용자 ID를 입력하세요."
+      />
+      <button
+        type="submit"
+        id="load"
+        class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+      >
+        사용자 데이터 요청
+      </button>
+    </form>
+    <div id="result" class="mt-4"></div>
+
+    <script>
+      const loadButton = document.getElementById("load");
+      const resultDiv = document.getElementById("result");
+      const userIdInput = document.getElementById("user_id");
+
+      const url = "https://jsonplaceholder.typicode.com/users";
+
+      async function fetchUsers() {
+        const userId = userIdInput.value.trim();
+        const fetchUrl = userId ? `${url}/${userId}` : url;
+
+        try {
+          const response = await fetch(fetchUrl);
+          const users = await response.json();
+
+          resultDiv.innerHTML = Array.isArray(users)
+            ? users
+                .map(
+                  (
+                    user,
+                  ) => `<div class="mb-2 p-2 border rounded hover:bg-gray-100">
+                    <h2 class="font-bold">${user.name} (${user.username})</h2>
+                    <p>Email: ${user.email}</p>
+                    <p>Phone: ${user.phone}</p>
+                    <p>Company: ${user.company.name}</p>
+                    <p>
+                      Address: ${user.address.street}, ${user.address.suite}, ${user.address.city}, ${user.address.zipcode}
+                    </p>
+                    <p>
+                      Website: <a href="https://${user.website}" target="_blank" class="text-blue-500 hover:underline">${user.website}</a>
+                    </p>
+                </div>`,
+                )
+                .join("")
+            : `<div class="p-4 border rounded bg-gray-50">
+                    <h2 class="font-bold text-xl mb-2">${users.name} (${users.username})</h2>
+                    <p>Email: ${users.email}</p>
+                    <p>Phone: ${users.phone}</p>
+                    <p>Company: ${users.company.name}</p>
+                    <p>
+                      Address: ${users.address.street}, ${users.address.suite}, ${users.address.city}, ${users.address.zipcode}
+                    </p>
+                    <p>
+                      Website: <a href="https://${users.website}" target="_blank" class="text-blue-500 hover:underline">${users.website}</a>
+                    </p>
+                </div>`;
+        } catch (error) {
+          resultDiv.textContent = `오류: ${error}`;
+        }
+      }
+
+      loadButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        fetchUsers();
+      });
+    </script>
+  </body>
+</html>

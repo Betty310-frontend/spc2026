@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fetch 1. Intro</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <h1 class="text-3xl font-bold">외부 요청 테스트</h1>
+    <button
+      id="load"
+      class="mt-4 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+    >
+      데이터 요청
+    </button>
+    <div id="result" class="mt-4"></div>
+    <script>
+      const loadButton = document.getElementById("load");
+      const resultDiv = document.getElementById("result");
+
+      async function fetchData() {
+        const url = new URL(window.location.href);
+        const postId = url.href.split("?postId=")[1];
+        const apiUrl = postId
+          ? `https://jsonplaceholder.typicode.com/posts/${postId}`
+          : "https://jsonplaceholder.typicode.com/posts";
+
+        try {
+          const response = await fetch(apiUrl);
+          const data = await response.json();
+
+          if (Array.isArray(data)) {
+            resultDiv.innerHTML = data
+              .slice(0, 5)
+              .map(
+                (
+                  post,
+                ) => `<div class="mb-2 p-2 border rounded hover:bg-gray-100">
+                      <a href="${url}?postId=${post.id}" class="hover:underline">
+                        <h2 class="font-bold">${post.title}</h2>
+                        <p>${post.body.length > 100 ? `${post.body.slice(0, 100)}...` : post.body}</p>
+                    </a>
+                  </div>`,
+              )
+              .join("");
+          } else {
+            resultDiv.innerHTML = `<div class="p-4 border rounded bg-gray-50">
+                <h2 class="font-bold text-xl mb-2">${data.title}</h2>
+                <p>${data.body}</p>
+                </div>`;
+          }
+        } catch (error) {
+          resultDiv.textContent = `오류: ${error}`;
+        }
+      }
+
+      loadButton.addEventListener("click", async () => {
+        await fetchData();
+      });
+    </script>
+  </body>
+</html>

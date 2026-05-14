@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fetch 7. OpenAI</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <form>
+      <input
+        type="text"
+        id="prompt"
+        placeholder="질문을 입력하세요."
+        class="border border-gray-500 rounded px-4 py-2"
+      />
+      <button
+        type="submit"
+        id="send-btn"
+        class="rounded-sm px-4 py-2 bg-indigo-600 text-white transition-colors hover:bg-indigo-700"
+      >
+        전송
+      </button>
+    </form>
+    <div id="result"></div>
+
+    <script>
+      document
+        .getElementById("send-btn")
+        .addEventListener("click", async (e) => {
+          e.preventDefault();
+
+          const response = await fetch("https://api.openai.com/v1/models", {
+            headers: {
+              Authorization: `Bearer ${OPENAI_API_KEY}`,
+            },
+          });
+          const data = await response.json();
+          document.getElementById("result").textContent = JSON.stringify(
+            data,
+            null,
+            2,
+          );
+        });
+    </script>
+  </body>
+</html>

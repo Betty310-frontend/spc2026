@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fetch Image Dog</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <!-- 1. 버튼을 클릭하면, 이미지를 화면에 출력한다. -->
+    <!-- 2. random 강아지 이미지 API 사용 -->
+    <section class="bg-white lg:grid lg:h-screen">
+      <div
+        class="mx-auto w-screen max-w-7xl px-4 pt-4 sm:px-6 sm:py-24 lg:px-8 lg:py-32"
+      >
+        <div class="mx-auto max-w-prose text-center">
+          <h1 class="text-4xl font-bold text-gray-900 sm:text-5xl">
+            Fetch Random
+            <strong class="text-indigo-600 block"> Dog </strong>
+            Images
+          </h1>
+
+          <p
+            class="mt-4 text-base text-pretty text-gray-700 sm:text-lg/relaxed"
+          >
+            버튼을 클릭하면 입력한 갯수만큼 랜덤 강아지 사진을 불러옵니다.
+          </p>
+
+          <div class="mt-4 flex justify-center gap-4 sm:mt-6">
+            <form>
+              <label for="count">
+                <div class="relative">
+                  <input
+                    type="text"
+                    id="count"
+                    class="mt-0.5 w-full rounded border-gray-500 pe-10 py-2 px-4 shadow-sm sm:text-sm"
+                  />
+
+                  <span
+                    class="absolute inset-y-0 right-2 grid w-8 place-content-center"
+                  >
+                    <button
+                      type="submit"
+                      id="submit"
+                      aria-label="Submit"
+                      class="rounded-sm px-4 py-2 bg-indigo-600 text-white transition-colors hover:bg-indigo-700"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke-width="1.5"
+                        stroke="currentColor"
+                        class="w-6 h-6"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z"
+                        ></path>
+                      </svg>
+                    </button>
+                  </span>
+                </div>
+              </label>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div
+        id="result"
+        class="flex gap-2 w-full flex-wrap justify-center text-center"
+      ></div>
+    </section>
+
+    <script>
+      const countInput = document.getElementById("count");
+      const submitButton = document.getElementById("submit");
+      const resultDiv = document.getElementById("result");
+
+      const baseUrl = "https://dog.ceo/api/breeds";
+
+      function getDogNameFromImageUrl(imageUrl) {
+        const imageBaseUrl = "https://images.dog.ceo/breeds/";
+
+        if (!imageUrl.startsWith(imageBaseUrl)) {
+          return "unknown";
+        }
+
+        return imageUrl.slice(imageBaseUrl.length).split("/")[0];
+      }
+
+      async function fetchDogImage() {
+        try {
+          const count = parseInt(countInput.value.trim(), 10) || 1;
+          const response = await fetch(`${baseUrl}/image/random/${count}`);
+          const data = await response.json();
+
+          resultDiv.innerHTML = data.message
+            .map((imageUrl) => {
+              const imageName = getDogNameFromImageUrl(imageUrl);
+              return `<div class="block">
+                    <img alt="${imageName}" src="${imageUrl}" class="h-64 w-full object-cover sm:h-80 lg:h-96">
+                    <h3 class="mt-4 text-lg font-bold text-gray-900 sm:text-xl">${imageName}</h3>
+                </div>`;
+            })
+            .join("");
+        } catch (error) {
+          resultDiv.textContent = `오류: ${error}`;
+        }
+      }
+
+      submitButton.addEventListener("click", (event) => {
+        event.preventDefault();
+        fetchDogImage();
+      });
+    </script>
+  </body>
+</html>
