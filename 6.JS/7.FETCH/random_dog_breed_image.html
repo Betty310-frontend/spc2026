@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Random Dog Breed Image</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <!-- 
+        https://dog.ceo
+        4.1 breed 목록 불러오기
+        4.2 해당 품종 사진 불러오기
+        4.3 breed 서브 목록도 불러오기
+        4.4 해당 서브품종까지 맞춰서 사진 불러오기 
+    -->
+    <section class="bg-white lg:grid lg:h-screen">
+      <div
+        class="mx-auto w-screen max-w-7xl px-4 pt-2 sm:px-6 sm:py-24 lg:px-8 lg:py-24"
+      >
+        <div class="mx-auto text-center">
+          <h1 class="text-4xl font-bold text-gray-900 sm:text-5xl">
+            Fetch Random
+            <strong class="text-indigo-600 block"> Dog </strong>
+            Breed Images
+          </h1>
+
+          <p
+            class="mt-4 text-base text-pretty text-gray-700 sm:text-lg/relaxed"
+          >
+            버튼을 클릭하면 랜덤 강아지 사진을 불러옵니다.
+          </p>
+
+          <div class="mt-4 flex justify-center gap-2 sm:mt-6">
+            <form>
+              <label for="main_breed" class="inline-block py-2">
+                <span
+                  class="inline-block w-full px-4 text-sm font-medium text-gray-700 text-left"
+                >
+                  Main Breed
+                </span>
+                <select
+                  name="main_breed"
+                  id="main_breed"
+                  class="mt-0.5 py-2 px-4 w-full rounded-lg border border-gray-300 sm:text-sm"
+                >
+                  <option value="">Please select</option>
+                </select>
+              </label>
+              <label for="sub_breed" class="inline-block py-2">
+                <span
+                  class="inline-block w-full px-4 text-sm font-medium text-gray-700 text-left"
+                >
+                  Sub Breed
+                </span>
+                <select
+                  name="sub_breed"
+                  id="sub_breed"
+                  class="mt-0.5 py-2 px-4 w-full rounded-lg border border-gray-300 sm:text-sm disabled:cursor-not-allowed disabled:bg-gray-100"
+                  disabled
+                >
+                  <option value="">Please select</option>
+                </select>
+              </label>
+              <button
+                type="submit"
+                id="submit"
+                aria-label="Submit"
+                class="rounded-sm px-4 py-2 bg-indigo-600 text-white transition-colors hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
+                disabled
+              >
+                Fetch Image
+              </button>
+            </form>
+          </div>
+
+          <div id="result"></div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      const baseUrl = "https://dog.ceo/api";
+      const listAllUrl = `${baseUrl}/breeds/list/all`;
+
+      const mainBreedSelect = document.getElementById("main_breed");
+      const subBreedSelect = document.getElementById("sub_breed");
+      const submitBtn = document.getElementById("submit");
+
+      const resultDiv = document.getElementById("result");
+
+      mainBreedSelect.addEventListener("change", function () {
+        const selectedMainBreed = mainBreedSelect.value;
+        if (!selectedMainBreed) {
+          subBreedSelect.innerHTML = '<option value="">Please select</option>';
+          subBreedSelect.disabled = true;
+          submitBtn.disabled = true;
+          return;
+        }
+        const subBreeds = breedData[selectedMainBreed];
+        if (subBreeds.length === 0) {
+          subBreedSelect.innerHTML = '<option value="">No sub-breeds</option>';
+          subBreedSelect.disabled = true;
+        } else {
+          subBreedSelect.innerHTML = '<option value="">Please select</option>';
+          subBreeds.forEach((sub) => {
+            const option = document.createElement("option");
+            option.value = sub;
+            option.textContent = sub[0].toUpperCase() + sub.slice(1);
+            subBreedSelect.appendChild(option);
+          });
+          subBreedSelect.disabled = false;
+        }
+        submitBtn.disabled = false;
+      });
+
+      submitBtn.addEventListener("click", (event) => {
+        event.preventDefault();
+
+        const mainBreed = mainBreedSelect.value;
+        const subBreed = subBreedSelect.value;
+
+        const randomImageUrl = `${baseUrl}/breed/${mainBreed}${subBreed ? `/${subBreed}` : ""}/images/random`;
+
+        const loading = `
+        <div class="flex flex-col items-center h-[400px] w-auto rounded-se-3xl rounded-es-3xl object-cover justify-center">
+          <svg class="mx-auto size-8 animate-spin text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          </svg>
+        </div>
+        `;
+
+        resultDiv.innerHTML = loading;
+
+        fetch(randomImageUrl)
+          .then((response) => response.json())
+          .then((data) => {
+            const imageUrl = data.message;
+            resultDiv.innerHTML = `<div class="flex flex-col items-center">
+              <img alt="" src="${imageUrl}" class="h-[400px] w-auto rounded-se-3xl rounded-es-3xl object-cover">
+
+              <div class="mt-4 sm:flex sm:items-center sm:justify-center sm:gap-4">
+                <strong class="font-medium">${mainBreed}${subBreed ? ` / ${subBreed}` : ""}</strong>
+              </div>
+            </div>`;
+          })
+          .catch((error) => {
+            console.error("Error fetching random dog image:", error);
+          });
+      });
+
+      let breedData = {};
+      (async function fetchDogListAll() {
+        try {
+          const response = await fetch(listAllUrl);
+          const data = await response.json();
+          breedData = data.message;
+
+          const mainBreedList = Object.keys(breedData).sort();
+          const mainBreedSelect = document.getElementById("main_breed");
+          const subBreedSelect = document.getElementById("sub_breed");
+
+          // Populate main breed select with optgroups
+          const optgroupMap = new Map();
+          mainBreedList.forEach((breed) => {
+            const breedFirstLetter = breed[0].toUpperCase();
+            if (!optgroupMap.has(breedFirstLetter)) {
+              const optgroup = document.createElement("optgroup");
+              optgroup.label = breedFirstLetter;
+              optgroupMap.set(breedFirstLetter, optgroup);
+              mainBreedSelect.appendChild(optgroup);
+            }
+            const option = document.createElement("option");
+            option.value = breed;
+            option.textContent = breedFirstLetter + breed.slice(1);
+            optgroupMap.get(breedFirstLetter).appendChild(option);
+          });
+
+          // Main breed change event
+          mainBreedSelect.addEventListener("change", function () {
+            const selectedMainBreed = mainBreedSelect.value;
+            // Clear sub_breed options except the first
+            subBreedSelect.innerHTML =
+              '<option value="">Please select</option>';
+            if (
+              !selectedMainBreed ||
+              !breedData[selectedMainBreed] ||
+              breedData[selectedMainBreed].length === 0
+            ) {
+              subBreedSelect.disabled = true;
+              return;
+            }
+            // Enable and populate sub_breed select with optgroups
+            subBreedSelect.disabled = false;
+            const subBreeds = breedData[selectedMainBreed].slice().sort();
+            const subOptgroupMap = new Map();
+            subBreeds.forEach((sub) => {
+              const subFirstLetter = sub[0].toUpperCase();
+              if (!subOptgroupMap.has(subFirstLetter)) {
+                const optgroup = document.createElement("optgroup");
+                optgroup.label = subFirstLetter;
+                subOptgroupMap.set(subFirstLetter, optgroup);
+                subBreedSelect.appendChild(optgroup);
+              }
+              const option = document.createElement("option");
+              option.value = sub;
+              option.textContent = subFirstLetter + sub.slice(1);
+              subOptgroupMap.get(subFirstLetter).appendChild(option);
+            });
+          });
+        } catch (error) {
+          console.error("Error fetching dog list:", error);
+        }
+      })();
+    </script>
+  </body>
+</html>
