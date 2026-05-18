@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <h1 class="text-2xl font-bold mb-4">Login</h1>
+
+    <form method="post">
+      <div class="flex justify-stretch gap-2">
+        <div class="inline-flex flex-col justify-center gap-2">
+          <label for="id">ID:</label>
+          <label for="password">Password:</label>
+        </div>
+        <div class="inline-flex flex-col gap-2">
+          <input
+            type="text"
+            id="id"
+            name="id"
+            required
+            class="border border-gray-300 p-2 rounded"
+          />
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            class="border border-gray-300 p-2 rounded"
+          />
+        </div>
+        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">
+          Login
+        </button>
+      </div>
+    </form>
+
+    {% if error %}
+    <p class="text-red-500 text-lg">{{ error }}</p>
+    {% endif %}
+
+    <script></script>
+  </body>
+</html>
