@@ -1,0 +1,121 @@
+"use client";
+
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { Form, Input, Button, Card, message, Typography } from "antd";
+import { UserOutlined, LockOutlined, MailOutlined, ShopOutlined } from "@ant-design/icons";
+import { useMutation } from "@tanstack/react-query";
+import { authApi } from "@/lib/api";
+import axios from "axios";
+
+const { Title, Text } = Typography;
+
+export default function RegisterPage() {
+  const router = useRouter();
+  const [form] = Form.useForm();
+
+  const registerMutation = useMutation({
+    mutationFn: (values: { username: string; password: string; email: string }) =>
+      authApi.register(values),
+    onSuccess: () => {
+      message.success("회원가입이 완료되었습니다. 로그인해주세요.");
+      router.push("/login");
+    },
+    onError: (err) => {
+      if (axios.isAxiosError(err)) {
+        message.error(err.response?.data?.error || "회원가입에 실패했습니다.");
+      }
+    },
+  });
+
+  return (
+    <div className="flex justify-center items-start pt-10">
+      <Card className="w-full max-w-md shadow-md rounded-2xl">
+        <div className="text-center mb-8">
+          <ShopOutlined className="text-4xl text-blue-500 mb-3" />
+          <Title level={3} className="!mb-1">
+            회원가입
+          </Title>
+          <Text className="text-gray-500">Shop 회원이 되어보세요</Text>
+        </div>
+
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={(values) => registerMutation.mutate(values)}
+          size="large"
+        >
+          <Form.Item
+            name="username"
+            label="아이디"
+            rules={[
+              { required: true, message: "아이디를 입력해주세요." },
+              { min: 3, message: "아이디는 3자 이상이어야 합니다." },
+            ]}
+          >
+            <Input prefix={<UserOutlined />} placeholder="아이디 (3자 이상)" />
+          </Form.Item>
+
+          <Form.Item
+            name="email"
+            label="이메일"
+            rules={[
+              { required: true, message: "이메일을 입력해주세요." },
+              { type: "email", message: "올바른 이메일 형식이 아닙니다." },
+            ]}
+          >
+            <Input prefix={<MailOutlined />} placeholder="이메일" />
+          </Form.Item>
+
+          <Form.Item
+            name="password"
+            label="비밀번호"
+            rules={[
+              { required: true, message: "비밀번호를 입력해주세요." },
+              { min: 4, message: "비밀번호는 4자 이상이어야 합니다." },
+            ]}
+          >
+            <Input.Password prefix={<LockOutlined />} placeholder="비밀번호 (4자 이상)" />
+          </Form.Item>
+
+          <Form.Item
+            name="confirm"
+            label="비밀번호 확인"
+            dependencies={["password"]}
+            rules={[
+              { required: true, message: "비밀번호 확인을 입력해주세요." },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue("password") === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(new Error("비밀번호가 일치하지 않습니다."));
+                },
+              }),
+            ]}
+          >
+            <Input.Password prefix={<LockOutlined />} placeholder="비밀번호 확인" />
+          </Form.Item>
+
+          <Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+              className="w-full"
+              loading={registerMutation.isPending}
+            >
+              회원가입
+            </Button>
+          </Form.Item>
+        </Form>
+
+        <div className="text-center text-sm text-gray-500">
+          이미 계정이 있으신가요?{" "}
+          <Link href="/login" className="text-blue-500 hover:underline font-medium">
+            로그인
+          </Link>
+        </div>
+      </Card>
+    </div>
+  );
+}
