@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product list</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <h1 class="text-3xl font-bold mb-4">상품 목록</h1>
+
+    <ul class="space-y-4">
+      {% for item in items %}
+      <li class="flex gap-4 items-end">
+        <img
+          src="{{ url_for('static', filename=item.image) }}"
+          alt="{{item.name}}"
+          class="w-48 h-48 object-cover rounded-md flex-shrink-0"
+        />
+        <div class="flex-1">
+          <p class="font-semibold text-lg">
+            {{ item.name }} (가격: {{ "{:,}".format(item.price) }}원)
+          </p>
+          <div class="flex gap-2">
+            <a
+              href="{{ url_for('add_to_cart', item_id=item.id) }}"
+              class="inline-block rounded-sm bg-green-600 px-4 py-2 text-sm font-medium text-white transition hover:scale-105 hover:shadow-sm"
+              >장바구니</a
+            >
+          </div>
+        </div>
+      </li>
+      {% endfor %}
+    </ul>
+
+    <a
+      href="{{ url_for('cart') }}"
+      class="inline-block rounded-sm bg-yellow-500 mt-4 px-4 py-2 text-sm font-medium text-white transition hover:scale-105 hover:shadow-sm"
+      >장바구니 보기</a
+    >
+    <script></script>
+  </body>
+</html>
