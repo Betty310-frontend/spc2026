@@ -1,0 +1,2 @@
+# Ignore Flask/Jinja templates to prevent block tags from being collapsed
+7.PYTHON/12.blueprint/**/templates/**/*.html
