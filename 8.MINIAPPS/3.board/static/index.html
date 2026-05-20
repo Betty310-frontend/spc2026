@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <div class="container mx-auto my-4">
+      <h1 class="text-2xl font-bold mb-4">메모장</h1>
+      <div>
+        <input
+          type="text"
+          name="title"
+          id="input-title"
+          placeholder="제목을 입력하세요"
+          class="border border-gray-300 rounded p-2 w-full mb-4"
+          required
+        />
+        <textarea
+          name="message"
+          id="input-message"
+          placeholder="메시지를 입력하세요"
+          class="border border-gray-300 rounded p-2 w-full mb-4 resize-none h-40"
+          required
+        ></textarea>
+        <button
+          id="save-button"
+          class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition-colors"
+        >
+          저장
+        </button>
+      </div>
+
+      <div id="card-container" class="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- 메모장 카드 목록이 여기에 표시됩니다 -->
+      </div>
+    </div>
+    <div
+      id="alert-container"
+      class="fixed bottom-4 right-4 bg-red-500 text-white px-4 py-2 rounded shadow-lg hidden"
+    ></div>
+    <script src="/static/js/script.js"></script>
+  </body>
+</html>
