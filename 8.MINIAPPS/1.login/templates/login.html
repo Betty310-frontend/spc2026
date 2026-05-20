@@ -1,0 +1,27 @@
+{% extends "base.html" %} 
+
+{% block title %} Login Page {% endblock %} 
+
+{% block content %} 
+
+    {% with messages = get_flashed_messages() %} 
+        {% if messages %} 
+            {% for msg in messages %}
+                <p>{{msg}}</p>
+            {% endfor %} 
+        {% endif %} 
+    {% endwith %}
+
+    <form method="POST" class="mx-auto max-w-md space-y-4 rounded-lg border border-gray-300 bg-gray-100 p-6">
+        <div>
+            <label for="username" class="block text-sm font-medium text-gray-900">Username:</label>
+            <input type="text" id="username" name="username" class="mt-1 w-full p-2 rounded-lg border border-gray-300 bg-white focus:border-indigo-500 focus:outline-none" required />
+        </div>
+        <div>
+            <label for="password" class="block text-sm font-medium text-gray-900">Password:</label>
+            <input type="password" id="password" name="password" class="mt-1 w-full p-2 rounded-lg border border-gray-300 bg-white focus:border-indigo-500 focus:outline-none" required />
+        </div>
+        <button type="submit" class="block w-full rounded-lg border border-indigo-600 bg-indigo-600 px-12 py-3 text-sm font-medium text-white transition-colors hover:bg-transparent hover:text-indigo-600">로그인</button>
+    </form>
+
+{% endblock %}
