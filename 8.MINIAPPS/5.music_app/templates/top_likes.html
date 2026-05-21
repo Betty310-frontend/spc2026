@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+
+{% block title %}TopLikes | Melon Neon - Premium Music{% endblock %}
+
+{% set active_page = 'top_likes' %}
+
+{% block content %}
+<section>
+    <div class="section-title">Top Liked Chart</div>
+    <p style="color: var(--text-muted); margin-bottom: 2rem;">가장 많은 유저들에게 사랑을 받은 최다 좋아요 랭킹 차트입니다.</p>
+
+    <div class="ranking-table-container">
+        <table class="ranking-table">
+            <thead>
+                <tr>
+                    <th>순위</th>
+                    <th>음악 정보</th>
+                    <th>좋아요 수</th>
+                    <th>좋아요 누른 리스너</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for song in songs %}
+                    <tr>
+                        <td class="rank-cell {% if loop.index <= 3 %}top-rank{% endif %}">
+                            #{{ loop.index }}
+                        </td>
+                        <td>
+                            <div class="song-cell" onclick="location.href='{{ url_for('song_detail', song_id=song.id) }}'" style="cursor: pointer;">
+                                <div class="song-cell-cover {{ song.album_image }}">
+                                    {{ song.title[0] }}
+                                </div>
+                                <div class="song-cell-info">
+                                    <span class="song-cell-title">{{ song.title }}</span>
+                                    <span class="song-cell-artist">{{ song.artist }}</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>
+                            <strong style="color: var(--accent-magenta); font-size: 1.1rem;">
+                                <i class="fas fa-heart"></i> {{ song.likes_count }}
+                            </strong>
+                        </td>
+                        <td>
+                            <div class="liked-users-cell">
+                                {% for username in song.liked_users %}
+                                    <span class="user-badge">{{ username }}</span>
+                                {% else %}
+                                    <span style="font-size: 0.8rem; color: var(--text-muted);">아직 없음</span>
+                                {% endfor %}
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4" style="text-align: center; color: var(--text-muted); padding: 3rem;">
+                            랭킹을 집계할 음악 데이터가 없습니다.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

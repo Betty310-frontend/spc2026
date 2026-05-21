@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+
+{% block title %}마이프로필 | Melon Neon{% endblock %}
+
+{% set active_page = 'profile' %}
+
+{% block content %}
+<section>
+    <!-- 프로필 요약 카드 -->
+    <div class="profile-header-sec">
+        <div class="profile-avatar-big">
+            {{ session.get('username')[0].upper() }}
+        </div>
+        <div>
+            <h1 class="profile-title">{{ session.get('username') }}</h1>
+            <p class="profile-email">
+                <i class="far fa-envelope"></i> {{ session.get('email') }} &nbsp;|&nbsp;
+                <i class="fas fa-calendar-alt"></i> 회원 등급: {{ '관리자(Admin)' if session.get('role') == 'admin' else '일반 유저(User)' }}
+            </p>
+        </div>
+    </div>
+
+    <!-- 탭 네비게이션 -->
+    <div class="profile-tab-section">
+        <div class="profile-tabs">
+            <button class="profile-tab active" data-tab="tab-liked">
+                <i class="fas fa-heart"></i> 내가 좋아한 음악 ({{ liked_songs|length }})
+            </button>
+            <button class="profile-tab" data-tab="tab-comments">
+                <i class="fas fa-comment"></i> 내가 쓴 댓글 ({{ comments|length }})
+            </button>
+        </div>
+
+        <!-- 탭 1: 좋아한 음악 목록 -->
+        <div class="tab-content active" id="tab-liked">
+            <div class="music-grid">
+                {% for song in liked_songs %}
+                    <div class="music-card" onclick="location.href='{{ url_for('song_detail', song_id=song.id) }}'">
+                        <div class="card-image-container">
+                            <div class="card-image {{ song.album_image }}">
+                                {{ song.title[0] }}
+                            </div>
+                        </div>
+                        <div class="card-info">
+                            <div class="card-title">{{ song.title }}</div>
+                            <div class="card-artist">{{ song.artist }}</div>
+                            <div class="card-tags" style="margin-top: 0.5rem;">
+                                {% for tag in song.hashtags.split() %}
+                                    <span class="tag-badge" style="pointer-events: none;">{{ tag }}</span>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        <div class="card-footer">
+                            <strong style="color: var(--accent-magenta);">
+                                <i class="fas fa-heart"></i> {{ song.likes_count }}
+                            </strong>
+                            <span style="font-size: 0.75rem; color: var(--text-muted);">
+                                감상하기 <i class="fas fa-chevron-right" style="font-size: 0.65rem;"></i>
+                            </span>
+                        </div>
+                    </div>
+                {% else %}
+                    <p style="color: var(--text-muted); text-align: center; width: 100%; padding: 4rem; grid-column: 1/-1;">
+                        아직 좋아요를 표시한 음악이 없습니다. 홈 화면에서 마음에 드는 곡을 담아보세요!
+                    </p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- 탭 2: 내가 쓴 댓글 히스토리 -->
+        <div class="tab-content" id="tab-comments">
+            <div class="comment-list">
+                {% for comment in comments %}
+                    <div class="comment-card" onclick="location.href='{{ url_for('song_detail', song_id=comment.song_id) }}'" style="cursor: pointer; transition: var(--transition-smooth);">
+                        <div class="comment-header">
+                            <strong style="color: var(--accent-cyan);">{{ comment.song_title }}</strong>
+                            <span class="comment-date">{{ comment.created_at }}</span>
+                        </div>
+                        <div class="comment-content" style="margin: 0.5rem 0;">
+                            "{{ comment.content }}"
+                        </div>
+                        <div style="font-size: 0.75rem; color: var(--text-muted); display: flex; justify-content: flex-end;">
+                            곡으로 이동하여 의견 나누기 <i class="fas fa-chevron-right" style="margin-left: 0.25rem;"></i>
+                        </div>
+                    </div>
+                {% else %}
+                    <p style="color: var(--text-muted); text-align: center; padding: 4rem;">
+                        작성한 댓글 히스토리가 없습니다. 음악을 듣고 느낀 감정을 다른 유저들과 공유해 보세요!
+                    </p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

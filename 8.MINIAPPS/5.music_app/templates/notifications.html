@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}알림함 | Melon Neon{% endblock %}
+
+{% set active_page = 'notifications' %}
+
+{% block content %}
+<section>
+    <div class="section-title">Notifications</div>
+    <p style="color: var(--text-muted); margin-bottom: 2rem;">내가 활동한 내역에 대한 리스너들의 최신 피드백을 실시간으로 확인해보세요.</p>
+
+    <div class="notification-list">
+        {% for note in notifications %}
+            <div class="notification-card {% if note.is_read == 0 %}unread{% endif %}">
+                
+                <!-- 알림 종류에 따른 아이콘 및 클래스 분기 -->
+                <div class="notification-icon-wrapper {% if note.type == 'song_like' or note.type == 'comment_like' %}icon-like{% else %}icon-comment{% endif %}">
+                    {% if note.type == 'song_like' %}
+                        <i class="fas fa-heart"></i>
+                    {% elif note.type == 'comment_like' %}
+                        <i class="fas fa-thumbs-up"></i>
+                    {% else %}
+                        <i class="fas fa-comment-dots"></i>
+                    {% endif %}
+                </div>
+
+                <div class="notification-content">
+                    <div class="notification-text">
+                        {% if note.type == 'song_like' %}
+                            <strong>{{ note.actor_name }}</strong>님이 회원님이 좋아요 한 
+                            <strong>'{{ note.song_title }}'</strong> 곡에 좋아요를 표시했습니다! ❤️
+                        {% elif note.type == 'song_comment' %}
+                            <strong>{{ note.actor_name }}</strong>님이 회원님이 좋아하는 
+                            <strong>'{{ note.song_title }}'</strong> 곡에 의견을 남겼습니다:
+                            <span style="display: block; margin-top: 0.25rem; font-style: italic; color: var(--text-muted); padding-left: 0.5rem; border-left: 2px solid var(--border-color);">
+                                "{{ note.comment_snippet }}"
+                            </span>
+                        {% elif note.type == 'comment_like' %}
+                            <strong>{{ note.actor_name }}</strong>님이 회원님이 남기신 댓글을 좋아합니다! 👍
+                        {% endif %}
+                    </div>
+                    
+                    <span class="notification-time"><i class="far fa-clock" style="font-size: 0.75rem; margin-right: 0.2rem;"></i> {{ note.created_at }}</span>
+                </div>
+
+                <!-- 상세 보기 바로가기 링크 -->
+                {% if note.song_id %}
+                    <div>
+                        <a href="{{ url_for('song_detail', song_id=note.song_id) }}" class="notification-link">
+                            곡 보기 <i class="fas fa-arrow-right"></i>
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        {% else %}
+            <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 4rem; text-align: center; color: var(--text-muted);">
+                <i class="fas fa-bell-slash" style="font-size: 3rem; margin-bottom: 1rem; color: rgba(255,255,255,0.05);"></i>
+                <p>새로 들어온 피드백이나 알림이 없습니다.</p>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}

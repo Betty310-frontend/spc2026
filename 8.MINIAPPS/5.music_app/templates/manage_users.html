@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+
+{% block title %}회원 관리 (Admin) | Melon Neon{% endblock %}
+
+{% set active_page = 'manage_users' %}
+
+{% block content %}
+<section>
+    <div class="section-title">Manage Users</div>
+    <p style="color: var(--text-muted); margin-bottom: 2rem;">서비스 가입자 명단 모니터링 및 회원 상태를 강제 관리(탈퇴/삭제) 할 수 있는 어드민 통제 콘솔입니다.</p>
+
+    <div class="ranking-table-container">
+        <table class="ranking-table">
+            <thead>
+                <tr>
+                    <th>유저 ID</th>
+                    <th>유저명</th>
+                    <th>가입 이메일</th>
+                    <th>역할 등급</th>
+                    <th>가입일</th>
+                    <th>관리 작업</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                    <tr>
+                        <td style="font-weight: bold; color: var(--text-muted);">#{{ u.id }}</td>
+                        <td>
+                            <div class="song-cell">
+                                <div class="user-avatar" style="background: linear-gradient(135deg, var(--accent-magenta), var(--accent-purple));">
+                                    {{ u.username[0].upper() }}
+                                </div>
+                                <strong style="color: white;">{{ u.username }}</strong>
+                            </div>
+                        </td>
+                        <td>{{ u.email }}</td>
+                        <td>
+                            {% if u.role == 'admin' %}
+                                <span class="comment-author-badge badge-admin"><i class="fas fa-shield-alt"></i> 어드민</span>
+                            {% else %}
+                                <span class="comment-author-badge badge-user"><i class="fas fa-user"></i> 일반 유저</span>
+                            {% endif %}
+                        </td>
+                        <td style="font-size: 0.85rem; color: var(--text-muted);">{{ u.created_at }}</td>
+                        <td>
+                            {% if u.id == session.get('user_id') %}
+                                <span style="font-size: 0.8rem; color: var(--text-muted); font-style: italic;">본인 계정</span>
+                            {% else %}
+                                <form action="{{ url_for('delete_user', user_id=u.id) }}" method="POST" class="delete-user-form" style="display: inline;">
+                                    <button type="submit" class="btn-secondary delete-user-btn" style="color: var(--accent-magenta); border-color: rgba(255,0,127,0.2); padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+                                        <i class="fas fa-user-minus"></i> 강제 탈퇴
+                                    </button>
+                                </form>
+                            {% block extra_js %}
+                            {{ super() }}
+                            <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                document.querySelectorAll('.delete-user-form').forEach(function(form) {
+                                    form.addEventListener('submit', async function(e) {
+                                        e.preventDefault();
+                                        const confirmed = await window.customConfirm('정말 이 사용자를 영구 탈퇴 처리하시겠습니까? 관련 데이터가 모두 삭제됩니다.');
+                                        if (confirmed) form.submit();
+                                    });
+                                });
+                            });
+                            </script>
+                            {% endblock %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 3rem;">
+                            회원 가입 데이터가 존재하지 않습니다.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

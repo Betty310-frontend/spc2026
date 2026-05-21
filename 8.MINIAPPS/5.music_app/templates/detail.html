@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ song.title }} - 상세정보 | Melon Neon{% endblock %}
+
+{% block content %}
+<div class="detail-container">
+    <!-- 좌측 앨범 커버 및 직접 재생 액션 -->
+    <section class="detail-cover-sec">
+        <div class="detail-cover {{ song.album_image }}">
+            {{ song.title[0] }}
+        </div>
+        <div class="detail-cover-actions">
+            <!-- 직접 재생 -->
+            <button class="btn-primary" onclick="loadAndPlayTrack('{{ song.title.replace('\'', '\\\'') }}', '{{ song.artist.replace('\'', '\\\'') }}', '{{ song.album_image }}')">
+                <i class="fas fa-play"></i> 재생하기
+            </button>
+            <!-- 좋아요 -->
+            <button class="btn-secondary like-btn {% if user_liked %}liked{% endif %}" 
+                    data-logged-in="{% if session.get('user_id') %}true{% else %}false{% endif %}"
+                    onclick="toggleLike('{{ song.id }}', this)">
+                <i class="{% if user_liked %}fas{% else %}far{% endif %} fa-heart"></i> 
+                좋아요 (<span class="like-count">{{ song.likes_count }}</span>)
+            </button>
+        </div>
+    </section>
+
+    <!-- 우측 곡 정보, 해시태그 관리, 댓글 목록 -->
+    <section class="detail-info-sec">
+        <h1 class="detail-title">{{ song.title }}</h1>
+        <p class="detail-artist">{{ song.artist }}</p>
+
+        <!-- 해시태그 목록 -->
+        <div class="detail-tags">
+            <h2 class="detail-section-title">
+                <span><i class="fas fa-tags" style="color: var(--accent-cyan);"></i> 해시태그</span>
+            </h2>
+            <div class="tag-container-editable" id="tag-list-container">
+                {% for tag in song.hashtags.split() %}
+                    <span class="tag-badge-editable" id="tag-badge-{{ tag.replace('#', 'hash-') }}">
+                        {{ tag }}
+                        {% if session.get('user_id') %}
+                            <!-- 로그인 한 사용자만 해시태그 삭제 버튼 노출 -->
+                            <button class="tag-delete-btn" onclick="deleteTag('{{ song.id }}', '{{ tag }}')">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        {% endif %}
+                    </span>
+                {% endfor %}
+            </div>
+
+            <!-- 로그인 한 사용자만 해시태그 추가 폼 노출 -->
+            {% if session.get('user_id') %}
+                <form class="tag-add-form" id="add-tag-form" data-song-id="{{ song.id }}">
+                    <input type="text" placeholder="#신규태그 추가..." required>
+                    <button type="submit" class="btn-primary" style="padding: 0.4rem 1rem;">추가</button>
+                </form>
+            {% else %}
+                <p style="font-size: 0.8rem; color: var(--text-muted);">
+                    <i class="fas fa-info-circle"></i> 해시태그를 추가/삭제하려면 <a href="{{ url_for('login') }}" style="color: var(--accent-cyan); text-decoration: none;">로그인</a>이 필요합니다.
+                </p>
+            {% endif %}
+        </div>
+
+        <!-- 코멘트(댓글) 시스템 -->
+        <div class="comments-section">
+            <h2 class="detail-section-title">
+                <span><i class="fas fa-comments" style="color: var(--accent-magenta);"></i> 리스너 한마디</span>
+            </h2>
+
+            <!-- 댓글 입력 폼 -->
+            <form action="{{ url_for('add_comment', song_id=song.id) }}" method="POST" class="comment-form">
+                <div class="comment-input-wrapper">
+                    {% if session.get('user_id') %}
+                        <textarea name="content" placeholder="이 곡에 대한 감상평을 남겨보세요..." required></textarea>
+                    {% else %}
+                        <!-- 비로그인 상태인 경우, 클릭 시 로그인 팝업으로 연동되는 텍스트 에어리어 제공 -->
+                        <textarea id="comment-guest-textarea" placeholder="댓글을 작성하시려면 로그인이 필요합니다."></textarea>
+                    {% endif %}
+                    
+                    {% if session.get('user_id') %}
+                        <div class="comment-form-footer">
+                            <button type="submit" class="btn-primary">댓글 작성</button>
+                        </div>
+                    {% endif %}
+                </div>
+            </form>
+
+            <!-- 댓글 리스트 -->
+            <div class="comment-list">
+                {% for comment in comments %}
+                    <div class="comment-card" id="comment-card-{{ comment.id }}">
+                        <div class="comment-header">
+                            <div class="comment-author-info">
+                                <span class="comment-author">{{ comment.username }}</span>
+                                {% if comment.role == 'admin' %}
+                                    <span class="comment-author-badge badge-admin">ADMIN</span>
+                                {% else %}
+                                    <span class="comment-author-badge badge-user">USER</span>
+                                {% endif %}
+                            </div>
+                            <span class="comment-date">{{ comment.created_at }}</span>
+                        </div>
+
+                        <!-- 댓글 본문 영역 (수정 시 실시간 인풋으로 교체됨) -->
+                        <div class="comment-content" id="comment-content-{{ comment.id }}">
+                            {{ comment.content }}
+                        </div>
+
+                        <!-- 댓글 좋아요, 수정, 삭제 조작 영역 -->
+                        <div class="comment-actions" id="comment-actions-{{ comment.id }}">
+                            <!-- 댓글 좋아요 버튼 -->
+                            <button class="comment-like-btn {% if comment.user_liked %}liked{% endif %}"
+                                    data-logged-in="{% if session.get('user_id') %}true{% else %}false{% endif %}"
+                                    onclick="toggleCommentLike('{{ comment.id }}', this)">
+                                <i class="{% if comment.user_liked %}fas{% else %}far{% endif %} fa-thumbs-up"></i>
+                                좋아요 (<span class="comment-like-count">{{ comment.likes_count }}</span>)
+                            </button>
+
+                            <!-- 작성자 본인 또는 어드민(CUD 권한 분기) -->
+                            {% if session.get('user_id') %}
+                                {% if session.get('user_id') == comment.user_id %}
+                                    <button class="comment-edit-btn" onclick="enableEditComment('{{ comment.id }}')">
+                                        <i class="fas fa-edit"></i> 수정
+                                    </button>
+                                {% endif %}
+
+                                {% if session.get('user_id') == comment.user_id or session.get('role') == 'admin' %}
+                                    <button class="comment-delete-btn" onclick="deleteComment('{{ comment.id }}')">
+                                        <i class="fas fa-trash"></i> 삭제
+                                    </button>
+                                {% endif %}
+                            {% endif %}
+                        </div>
+                    </div>
+                {% else %}
+                    <p style="color: var(--text-muted); text-align: center; padding: 2rem; font-size: 0.9rem;">
+                        아직 작성된 댓글이 없습니다. 첫 번째 감상평을 작성해 보세요!
+                    </p>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

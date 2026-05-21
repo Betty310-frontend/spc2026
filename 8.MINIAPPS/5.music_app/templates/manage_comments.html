@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block title %}댓글 관리 (Admin) | Melon Neon{% endblock %}
+
+{% set active_page = 'manage_comments' %}
+
+{% block content %}
+<section>
+    <div class="section-title">Manage Comments</div>
+    <p style="color: var(--text-muted); margin-bottom: 2rem;">서비스의 모든 곡에 등록된 한마디(댓글) 전체를 모니터링하고 부적절한 게시물을 강제 정화(삭제)할 수 있는 어드민 통제 콘솔입니다.</p>
+
+    <div class="ranking-table-container">
+        <table class="ranking-table">
+            <thead>
+                <tr>
+                    <th>댓글 ID</th>
+                    <th>작성 리스너</th>
+                    <th>댓글 내용</th>
+                    <th>대상 음악</th>
+                    <th>작성일</th>
+                    <th>관리 작업</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for c in comments %}
+                    <tr>
+                        <td style="font-weight: bold; color: var(--text-muted);">#{{ c.id }}</td>
+                        <td>
+                            <strong style="color: white;">{{ c.username }}</strong>
+                        </td>
+                        <td style="font-size: 0.9rem; max-width: 300px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">
+                            "{{ c.content }}"
+                        </td>
+                        <td>
+                            <strong style="color: var(--accent-cyan);">{{ c.song_title }}</strong>
+                        </td>
+                        <td style="font-size: 0.85rem; color: var(--text-muted);">{{ c.created_at }}</td>
+                        <td>
+                            <form action="{{ url_for('delete_comment_admin', comment_id=c.id) }}" method="POST" class="delete-comment-form" style="display: inline;">
+                                <button type="submit" class="btn-secondary delete-comment-btn" style="color: var(--accent-magenta); border-color: rgba(255,0,127,0.2); padding: 0.4rem 0.8rem; font-size: 0.8rem;">
+                                    <i class="fas fa-trash"></i> 강제 삭제
+                                </button>
+                            </form>
+                        {% block extra_js %}
+                        {{ super() }}
+                        <script>
+                        document.addEventListener('DOMContentLoaded', function() {
+                            document.querySelectorAll('.delete-comment-form').forEach(function(form) {
+                                form.addEventListener('submit', async function(e) {
+                                    e.preventDefault();
+                                    const confirmed = await window.customConfirm('이 댓글을 강제로 삭제하시겠습니까?');
+                                    if (confirmed) form.submit();
+                                });
+                            });
+                        });
+                        </script>
+                        {% endblock %}
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 3rem;">
+                            모니터링할 댓글 데이터가 존재하지 않습니다.
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

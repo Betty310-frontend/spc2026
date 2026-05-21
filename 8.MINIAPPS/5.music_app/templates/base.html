@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Melon Neon - Premium Music{% endblock %}</title>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom_modal.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <!-- 좌측 사이드바 -->
+    <aside class="sidebar">
+        <a href="{{ url_for('index') }}" class="logo-container">
+            <div class="logo-icon">
+                <i class="fas fa-play"></i>
+            </div>
+            <span class="logo-text">Melon Neon</span>
+        </a>
+
+        <nav class="nav-menu">
+            <li class="nav-item {% if active_page == 'home' %}active{% endif %}">
+                <a href="{{ url_for('index') }}">
+                    <i class="fas fa-home nav-icon"></i>
+                    <span>Home</span>
+                </a>
+            </li>
+            <li class="nav-item {% if active_page == 'top_likes' %}active{% endif %}">
+                <a href="{{ url_for('top_likes') }}">
+                    <i class="fas fa-crown nav-icon"></i>
+                    <span>TopLikes</span>
+                </a>
+            </li>
+            <li class="nav-item {% if active_page == 'hashtags' %}active{% endif %}">
+                <a href="{{ url_for('hashtags') }}">
+                    <i class="fas fa-hashtag nav-icon"></i>
+                    <span>Hashtags</span>
+                </a>
+            </li>
+
+            <!-- 로그인 O / 어드민 O 동적 메뉴 분기 -->
+            {% if session.get('user_id') %}
+                {% if session.get('role') == 'admin' %}
+                    <!-- 어드민 메뉴 -->
+                    <li class="nav-item {% if active_page == 'manage_users' %}active{% endif %}">
+                        <a href="{{ url_for('manage_users') }}">
+                            <i class="fas fa-users-cog nav-icon"></i>
+                            <span>Manage Users</span>
+                        </a>
+                    </li>
+                    <li class="nav-item {% if active_page == 'manage_comments' %}active{% endif %}">
+                        <a href="{{ url_for('manage_comments') }}">
+                            <i class="fas fa-comments nav-icon"></i>
+                            <span>Manage Comments</span>
+                        </a>
+                    </li>
+                {% endif %}
+
+                <li class="nav-item {% if active_page == 'notifications' %}active{% endif %}">
+                    <a href="{{ url_for('notifications_view') }}">
+                        <i class="fas fa-bell nav-icon"></i>
+                        <span>Notifications</span>
+                        {% if unread_notifications_count > 0 %}
+                            <span class="badge">{{ unread_notifications_count }}</span>
+                        {% endif %}
+                    </a>
+                </li>
+                <li class="nav-item {% if active_page == 'profile' %}active{% endif %}">
+                    <a href="{{ url_for('profile_view') }}">
+                        <i class="fas fa-user-circle nav-icon"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="{{ url_for('logout') }}" style="color: rgba(255, 71, 87, 0.7);">
+                        <i class="fas fa-sign-out-alt nav-icon"></i>
+                        <span>Logout</span>
+                    </a>
+                </li>
+            {% else %}
+                <!-- 비로그인 메뉴 -->
+                <li class="nav-item {% if active_page == 'login' %}active{% endif %}">
+                    <a href="{{ url_for('login') }}">
+                        <i class="fas fa-sign-in-alt nav-icon"></i>
+                        <span>Login</span>
+                    </a>
+                </li>
+            {% endif %}
+        </nav>
+
+        <!-- 프로필 카드 정보 (로그인 시 노출) -->
+        {% if session.get('user_id') %}
+            <div class="sidebar-footer">
+                <div class="user-profile-card">
+                    <div class="user-avatar">
+                        {{ session.get('username')[0].upper() }}
+                    </div>
+                    <div class="user-info">
+                        <div class="user-name">{{ session.get('username') }}</div>
+                        <div class="user-role">
+                            {% if session.get('role') == 'admin' %}
+                                <i class="fas fa-shield-alt"></i> Admin
+                            {% else %}
+                                <i class="fas fa-user"></i> Standard
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+    </aside>
+
+    <!-- 메인 래퍼 -->
+    <div class="main-wrapper">
+        <!-- 상단 헤더 -->
+        <header class="header">
+            <!-- 검색 상자 -->
+            <div class="search-box">
+                <i class="fas fa-search"></i>
+                <input type="text" id="search-input" placeholder="곡명, 가수명, #해시태그 통합 검색..." value="{{ search_query or '' }}">
+            </div>
+
+            <!-- 헤더 우측 로그인 정보 및 버튼 -->
+            <div class="header-actions">
+                {% if session.get('user_id') %}
+                    <span style="font-size: 0.9rem; color: var(--text-muted);">
+                        안녕하세요, <strong>{{ session.get('username') }}</strong>님!
+                    </span>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="btn-secondary">로그인</a>
+                    <a href="{{ url_for('register') }}" class="btn-primary">회원가입</a>
+                {% endif %}
+            </div>
+        </header>
+
+        <!-- 플래시 토스트 알림창 -->
+        <div class="flash-messages" id="toast-container">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {% if category == 'success' %}
+                                <i class="fas fa-check-circle"></i>
+                            {% elif category == 'danger' %}
+                                <i class="fas fa-exclamation-circle"></i>
+                            {% else %}
+                                <i class="fas fa-info-circle"></i>
+                            {% endif %}
+                            <span>{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+        </div>
+
+        <!-- 메인 콘텐츠 몸체 -->
+        <main class="content-body">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+    <!-- 하단 가상 음악 플레이어 바 -->
+    <footer class="player-bar">
+        <div class="player-left">
+            <div class="player-cover grad-1" id="pb-cover">M</div>
+            <div class="player-song-info">
+                <div class="player-song-title" id="pb-title">Melon Neon Player</div>
+                <div class="player-song-artist" id="pb-artist">노래를 선택하여 들어보세요</div>
+            </div>
+        </div>
+
+        <div class="player-center">
+            <div class="player-controls">
+                <button class="control-btn"><i class="fas fa-random"></i></button>
+                <button class="control-btn"><i class="fas fa-step-backward"></i></button>
+                <button class="control-btn btn-play-pause" id="btn-play-pause"><i class="fas fa-play"></i></button>
+                <button class="control-btn"><i class="fas fa-step-forward"></i></button>
+                <button class="control-btn"><i class="fas fa-redo"></i></button>
+            </div>
+            <div class="player-timeline">
+                <span class="time-label" id="current-time">0:00</span>
+                <div class="timeline-progress-bg">
+                    <div class="timeline-progress-fill"></div>
+                </div>
+                <span class="time-label">3:20</span>
+            </div>
+        </div>
+
+        <div class="player-right">
+            <!-- 댄싱 이퀄라이저 애니메이션 -->
+            <div class="eq-container">
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+                <div class="eq-bar"></div>
+            </div>
+
+            <div class="volume-container" style="margin-left: 1.5rem;">
+                <i class="fas fa-volume-up" style="color: var(--text-muted);"></i>
+                <div class="volume-progress-bg">
+                    <div class="volume-progress-fill"></div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 커스텀 confirm 모달 -->
+    {% include '_confirm_modal.html' %}
+
+    <!-- 비로그인 전용 로그인 권장 모달 -->
+    <div class="modal-overlay" id="login-modal">
+        <div class="modal-box">
+            <div class="modal-icon">
+                <i class="fas fa-heart-broken animate__animated animate__pulse animate__infinite"></i>
+            </div>
+            <h3 class="modal-title">로그인이 필요합니다</h3>
+            <p class="modal-desc">
+                좋아요를 누르고, 해시태그를 추가/삭제하고, 다른 리스너들과 유용한 댓글 소통을 즐기기 위해서는 로그인이 필요합니다.
+            </p>
+            <div class="modal-buttons">
+                <button class="btn-secondary" onclick="closeLoginModal()">둘러보기</button>
+                <a href="{{ url_for('login') }}" class="btn-primary">로그인 하러가기</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS 파일 연동 -->
+    <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/custom_confirm.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

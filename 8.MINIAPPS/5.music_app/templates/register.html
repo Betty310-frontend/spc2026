@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 | Melon Neon</title>
+    <!-- FontAwesome CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <div class="auth-container">
+        <!-- 회원가입 카드 -->
+        <div class="auth-card">
+            <div class="auth-header">
+                <a href="{{ url_for('index') }}" class="auth-logo">
+                    <i class="fas fa-play"></i>
+                </a>
+                <h2 class="auth-title">Melon Neon 회원가입</h2>
+                <p class="auth-subtitle">무료 가입으로 최신 명곡의 해시태그와 댓글 및 좋아요 소통을 바로 즐겨보세요.</p>
+            </div>
+
+            <!-- 플래시 메세지 -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}" style="min-width: unset; margin-bottom: 1.5rem; padding: 0.75rem 1rem;">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <span style="font-size: 0.85rem;">{{ message }}</span>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <form action="{{ url_for('register') }}" method="POST" class="auth-form">
+                <!-- 사용자명 -->
+                <div class="form-group">
+                    <label for="username">사용자명 (아이디)</label>
+                    <div class="form-input-wrapper">
+                        <i class="fas fa-user"></i>
+                        <input type="text" name="username" id="username" placeholder="사용자명 입력" required>
+                    </div>
+                </div>
+
+                <!-- 이메일 -->
+                <div class="form-group">
+                    <label for="email">이메일 주소</label>
+                    <div class="form-input-wrapper">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" name="email" id="email" placeholder="이메일 입력" required>
+                    </div>
+                </div>
+
+                <!-- 비밀번호 -->
+                <div class="form-group">
+                    <label for="password">비밀번호</label>
+                    <div class="form-input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" name="password" id="password" placeholder="비밀번호 입력 (최소 6자 권장)" required>
+                    </div>
+                </div>
+
+                <!-- 회원가입 제출 버튼 -->
+                <button type="submit" class="btn-primary" style="margin-top: 1rem; padding: 0.8rem; justify-content: center; font-size: 0.95rem;">
+                    가입 완료하기
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                이미 계정이 있으신가요? &nbsp;<a href="{{ url_for('login') }}">로그인 하기</a>
+            </div>
+            
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="{{ url_for('index') }}" style="color: var(--text-muted); text-decoration: none; font-size: 0.8rem;">
+                    <i class="fas fa-arrow-left"></i> 홈으로 그냥 이동하기
+                </a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

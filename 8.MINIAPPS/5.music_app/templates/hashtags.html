@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}Hashtags | Melon Neon - Premium Music{% endblock %}
+
+{% set active_page = 'hashtags' %}
+
+{% block content %}
+<section>
+    <div class="section-title">Hashtag Rankings</div>
+    <p style="color: var(--text-muted); margin-bottom: 2rem;">등록된 전체 음악 중에서 가장 많이 사용된 태그 빈도수와 인기 해시태그 시각화 차트입니다.</p>
+
+    {% if tags %}
+        <div class="chart-container">
+            {% for tag in tags %}
+                <div class="chart-row">
+                    <!-- 해시태그 이름 -->
+                    <span class="chart-tag-name">
+                        <i class="fas fa-hashtag" style="font-size: 0.85rem; margin-right: 0.2rem;"></i> {{ tag.name[1:] if tag.name.startswith('#') else tag.name }}
+                    </span>
+                    <!-- CSS 애니메이션 막대 그래프 -->
+                    <div class="chart-bar-bg">
+                        <div class="chart-bar-fill" style="width: {{ tag.percentage }}%;"></div>
+                    </div>
+                    <!-- 개수 수치 -->
+                    <span class="chart-value">{{ tag.count }}개</span>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div style="background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 16px; padding: 4rem; text-align: center; color: var(--text-muted);">
+            <i class="fas fa-tags" style="font-size: 3rem; margin-bottom: 1rem; color: rgba(255,255,255,0.05);"></i>
+            <p>집계할 해시태그 데이터가 존재하지 않습니다.</p>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}

@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}홈 | Melon Neon - Premium Music{% endblock %}
+
+{% set active_page = 'home' %}
+
+{% block content %}
+<!-- 상단 피처드 배너 -->
+<section class="featured-banner">
+    <div class="banner-content">
+        <span class="banner-badge">Today's Pick</span>
+        <h1 class="banner-title">Melon Neon 프리미엄 차트</h1>
+        <p class="banner-subtitle">실시간 대중 가요 및 글로벌 팝 명곡 리스트를 현대적인 네온 모드 분위기로 감상해보세요.</p>
+        <button class="btn-primary" onclick="loadAndPlayTrack('Dynamite', 'BTS', 'grad-1')">
+            <i class="fas fa-play"></i> 즉시 감상하기
+        </button>
+    </div>
+</section>
+
+<!-- 음악 목록 섹션 -->
+<section>
+    <div class="section-title">최신 뮤직 리스트</div>
+    
+    <div class="music-grid">
+        {% for song in songs %}
+            <!-- 음악 카드 (개별 클릭 시 상세페이지 이동, play/like 버튼은 이벤트 전파 중단) -->
+            <div class="music-card" 
+                 data-title="{{ song.title }}" 
+                 data-artist="{{ song.artist }}" 
+                 data-tags="{{ song.hashtags }}"
+                 onclick="location.href='{{ url_for('song_detail', song_id=song.id) }}'">
+                 
+                <div class="card-image-container">
+                    <div class="card-image {{ song.album_image }}">
+                        {{ song.title[0] }}
+                    </div>
+                    <!-- 재생 호버 버튼 -->
+                    <button class="play-hover-btn" 
+                            onclick="event.stopPropagation(); loadAndPlayTrack('{{ song.title.replace('\'', '\\\'') }}', '{{ song.artist.replace('\'', '\\\'') }}', '{{ song.album_image }}')">
+                        <i class="fas fa-play"></i>
+                    </button>
+                </div>
+                
+                <div class="card-info">
+                    <div class="card-title">{{ song.title }}</div>
+                    <div class="card-artist">{{ song.artist }}</div>
+                    
+                    <div class="card-tags">
+                        {% for tag in song.hashtags.split() %}
+                            <a href="#" class="tag-badge">{{ tag }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+                
+                <div class="card-footer">
+                    <!-- 좋아요 아이콘 -->
+                    <button class="like-btn {% if song.user_liked %}liked{% endif %}" 
+                            data-logged-in="{% if session.get('user_id') %}true{% else %}false{% endif %}"
+                            onclick="event.stopPropagation(); toggleLike('{{ song.id }}', this)">
+                        <i class="{% if song.user_liked %}fas{% else %}far{% endif %} fa-heart"></i>
+                        <span class="like-count">{{ song.likes_count }}</span>
+                    </button>
+                    
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">
+                        자세히 보기 <i class="fas fa-chevron-right" style="font-size: 0.65rem; margin-left: 0.2rem;"></i>
+                    </span>
+                </div>
+            </div>
+        {% else %}
+            <p style="color: var(--text-muted); grid-column: 1/-1; text-align: center; padding: 2rem;">
+                등록된 음악이 없습니다.
+            </p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
