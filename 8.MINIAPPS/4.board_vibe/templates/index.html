@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VibeBoard - 나의 생각을 나누는 감성 게시판</title>
+    
+    <!-- SEO and Meta Tags -->
+    <meta name="description" content="VibeBoard에서 당신의 생각과 분위기를 공유하세요. 실시간 리액션과 프리미엄 글래스모피즘 디자인의 감성 게시판.">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <!-- Background glow elements -->
+    <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+    <div class="glow-orb orb-3"></div>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <h1 class="logo">Vibe<span>Board</span></h1>
+            <p class="tagline">오늘 당신의 생각과 감정(Vibe)을 공유해 보세요</p>
+        </header>
+
+        <!-- Main Content -->
+        <main class="app-main">
+            <!-- Form Section -->
+            <section class="form-section">
+                <div class="glass-card form-container">
+                    <h2 class="section-title">새로운 Vibe 남기기</h2>
+                    <form id="post-form" novalidate>
+                        <div class="input-group">
+                            <label for="post-title">제목</label>
+                            <input type="text" id="post-title" name="title" required placeholder="어떤 주제인가요?" maxlength="100">
+                            <span class="error-msg" id="title-error"></span>
+                        </div>
+                        
+                        <div class="input-group">
+                            <label for="post-message">메시지</label>
+                            <textarea id="post-message" name="message" required placeholder="지금 느끼는 생각이나 나누고 싶은 이야기를 적어보세요..." rows="4" maxlength="1000"></textarea>
+                            <span class="error-msg" id="message-error"></span>
+                            <div class="char-counter"><span id="current-char">0</span> / 1000</div>
+                        </div>
+
+                        <button type="submit" class="btn-submit" id="btn-submit">
+                            <span>Vibe 등록하기</span>
+                            <svg class="icon-send" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+                        </button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Board Cards Section -->
+            <section class="board-section">
+                <div class="board-header">
+                    <h2 class="board-title">최근 등록된 피드</h2>
+                    <span class="board-count" id="board-count">0 Posts</span>
+                </div>
+
+                <!-- Empty State -->
+                <div class="empty-state" id="empty-state">
+                    <div class="empty-illustration">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                    </div>
+                    <h3>아직 등록된 Vibe가 없습니다</h3>
+                    <p>가장 먼저 첫 번째 감성 글을 작성해 보세요!</p>
+                </div>
+
+                <!-- Grid view for cards -->
+                <div class="posts-grid" id="posts-grid">
+                    <!-- Cards will be injected here dynamically -->
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <p>&copy; 2026 VibeBoard. Crafted with ❤️ & Flask</p>
+        </footer>
+    </div>
+
+    <!-- Notification Toast -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
