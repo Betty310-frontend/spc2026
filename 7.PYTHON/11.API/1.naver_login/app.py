@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from flask import Flask, jsonify, redirect, request, render_template
+from flask import Flask, jsonify, redirect, request, render_template, session, url_for
 import requests
 
 from dotenv import load_dotenv
@@ -12,8 +12,10 @@ NAVER_CLIENT_SECRET = os.getenv('NAVER_CLIENT_SECRET')
 NAVER_AUTHORIZE_URL = os.getenv('NAVER_AUTHORIZE_URL')
 NAVER_CALLBACK_URI = os.getenv('NAVER_REDIRECT_URI')
 NAVER_TOKEN_URL = os.getenv('NAVER_TOKEN_URL')
+NAVER_USER_INFO_URL = os.getenv('NAVER_USER_INFO_URL')
 
 app = Flask(__name__)
+app.secret_key = os.getenv('SESSION_SECRET_KEY')
 app.config['JSON_AS_ASCII'] = False
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
 
@@ -25,7 +27,7 @@ def set_utf8_header(response):
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', user=session.get('user'))
 
 @app.route('/naver_login')
 def naver_login():
@@ -57,10 +59,24 @@ def naver_callback():
         token_data = token_response.json()
         access_token = token_data.get('access_token')
         print('Access Token:', access_token)  # 디버깅용 출력
-        return jsonify({'access_token': access_token})
+
+        # access_token으로 네이버에서 사용자 정보 요청
+        headers = {'Authorization': f'Bearer {access_token}'}
+        user_info_response = requests.get(NAVER_USER_INFO_URL, headers=headers)
+        if user_info_response.status_code == 200:
+            user_info = user_info_response.json()
+            session['user'] = user_info['response']  # 세션에 사용자 정보 저장
+            print('User Info:', user_info)  # 디버깅용 출력
+            return redirect(url_for('index'))
+        else:
+            return jsonify({'error': 'Failed to obtain user info'}), 400
     else:
         return jsonify({'error': 'Failed to obtain access token'}), 400
 
+@app.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000)

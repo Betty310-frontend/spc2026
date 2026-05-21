@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>네이버 로그인</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="flex flex-col items-center justify-center min-h-screen bg-gray-100">
+    {% if user %}
+        <div class="bg-white p-6 rounded shadow-md text-center">
+            <h1 class="text-2xl font-bold mb-4">환영합니다, {{ user.nickname }}님!</h1>
+            <p class="mb-4">이메일: {{ user.email }}</p>
+            {% if user.birthyear and user.birthday %}
+            <p class="mb-4">생일: {{ user.birthyear }}년 {{ user.birthday }}</p>
+            {% endif %}
+            {% if user.profile_image %}
+            <img src="{{ user.profile_image }}" alt="프로필 이미지" class="w-24 h-24 rounded-full mx-auto mb-4">
+            {% endif %}
+            <a href="{{ url_for('logout') }}" class="text-blue-500 hover:underline">로그아웃</a>
+        </div>
+    {% else %}
+    <h1 class="text-2xl font-bold mb-4">로그인</h1>
+    <a href="{{ url_for('naver_login') }}">
+        <img src="{{ url_for('static', filename='img/NAVER_login_Dark_KR_green_center_H48.png') }}" alt="네이버 로그인" width="350">
+    </a>
+    {% endif %}
+<script></script>
+</body>
+</html>
