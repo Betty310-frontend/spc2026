@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>플라스크 웹소켓 테스트</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <h1 class="text-2xl font-bold my-4">플라스크 웹소켓 테스트</h1>
+    <form>
+      <input
+        type="text"
+        id="msg"
+        placeholder="메시지 입력"
+        class="border border-gray-300 p-2 rounded"
+      />
+      <button
+        type="submit"
+        id="send"
+        class="bg-blue-500 text-white p-2 rounded cursor-pointer hover:bg-blue-600"
+      >
+        전송
+      </button>
+    </form>
+
+    <script>
+      const socket = new WebSocket("ws://localhost:5000/ws");
+      const sendButton = document.getElementById("send");
+
+      socket.onopen = () => {
+        console.log("웹소켓 연결 성공");
+      };
+
+      socket.onmessage = (event) => {
+        console.log("서버 메시지: ", event.data);
+      };
+
+      sendButton.addEventListener("click", (event) => {
+        event.preventDefault();
+
+        const msg = document.getElementById("msg");
+        const msgValue = msg.value.trim();
+        socket.send(msgValue);
+        console.log("메시지 전송: ", msgValue);
+
+        msg.value = "";
+      });
+    </script>
+  </body>
+</html>
