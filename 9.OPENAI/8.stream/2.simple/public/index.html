@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OpenAI Stream</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <div class="container mx-auto p-4 max-h-screen flex flex-col">
+      <h1 class="text-3xl font-bold mb-4">스트림 채팅</h1>
+
+      <div id="chat" class="mt-4 p-4 border rounded h-96 overflow-y-auto"></div>
+
+      <form>
+        <div id="status" class="mt-2 flex items-center text-gray-500">
+          <input
+            type="text"
+            id="input"
+            placeholder="메시지를 입력하세요."
+            class="border border-gray-300 p-2 rounded flex-1 mr-2"
+          />
+          <button
+            type="submit"
+            id="send"
+            class="bg-blue-500 text-white px-4 py-2 rounded cursor-pointer hover:bg-blue-600"
+          >
+            전송
+          </button>
+        </div>
+      </form>
+    </div>
+    <script>
+      const input = document.getElementById("input");
+      const send = document.getElementById("send");
+      const chat = document.getElementById("chat");
+
+      send.addEventListener("click", async (event) => {
+        event.preventDefault();
+        const message = input.value.trim();
+
+        const messageElement = document.createElement("p");
+        messageElement.textContent = `You: ${message}`;
+        messageElement.classList.add("border-b", "border-gray-300", "p-2", "mb-2");
+        chat.appendChild(messageElement);
+        chat.scrollTop = chat.scrollHeight;
+
+        try {
+          const response = await fetch("/stream", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ message }),
+          });
+
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+
+          const chatMessageElement = document.createElement("p");
+          chatMessageElement.classList.add("p-2");
+          const chatInfoElement = document.createElement("span");
+          chatInfoElement.textContent = "AI: ";
+          chatMessageElement.appendChild(chatInfoElement);
+
+          while (true) {
+            const { value, done } = await reader.read();
+            if (done) break;
+
+            const chunk = decoder.decode(value, { stream: true });
+            const messageElement = document.createElement("span");
+            messageElement.textContent = chunk;
+            chatMessageElement.appendChild(messageElement);
+
+            chat.appendChild(chatMessageElement);
+            chat.scrollTop = chat.scrollHeight;
+          }
+
+          input.value = "";
+        } catch (error) {
+          console.error("Error:", error);
+        }
+      });
+    </script>
+  </body>
+</html>
