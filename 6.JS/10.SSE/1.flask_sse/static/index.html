@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>플라스크 SSE 테스트</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <h1 class="text-2xl font-bold my-4">플라스크 SSE 테스트</h1>
+    <form>
+      <input
+        type="text"
+        id="msg"
+        placeholder="메시지 입력"
+        class="border border-gray-300 p-2 rounded"
+      />
+      <button
+        type="submit"
+        id="send"
+        class="bg-blue-500 text-white p-2 rounded cursor-pointer hover:bg-blue-600"
+      >
+        전송
+      </button>
+    </form>
+
+    <hr class="my-4" />
+
+    <div id="reply"></div>
+
+    <script>
+      // 응답 출력할 곳 가져오기
+      const replyDiv = document.getElementById("reply");
+
+      // 메시지 받는 API
+      const source = new EventSource("/stream");
+      source.onopen = () => {
+        console.log("서버 연결 성공 - SSE 리슨 시작");
+      };
+      source.onmessage = (event) => {
+        console.log("서버 메시지: ", event.data);
+        const msgElem = document.createElement("p");
+        msgElem.textContent = event.data;
+        replyDiv.appendChild(msgElem);
+      };
+
+      // 메시지 보내는 API
+      const sendBtn = document.getElementById("send");
+      sendBtn.addEventListener("click", async (event) => {
+        event.preventDefault();
+
+        const msgInput = document.getElementById("msg");
+        const msg = msgInput.value;
+
+        try {
+          const response = await fetch("/send", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: "message=" + encodeURIComponent(msg), // 폼의 기본 key-value는 key=value 형태로 전달 됌.
+          });
+
+          if (response.status === 204) {
+            console.log("메시지 전송 성공");
+            msgInput.value = ""; // 입력 필드 초기화
+          }
+        } catch (error) {
+          console.error("메시지 전송 실패:", error);
+        }
+      });
+    </script>
+  </body>
+</html>
