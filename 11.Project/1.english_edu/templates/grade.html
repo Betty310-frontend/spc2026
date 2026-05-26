@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block title %}{{ grade }} 학년{% endblock %}
+
+{% block content %}
+<h2>{{ grade }} 학년 커리큘럼</h2>
+<!-- TODO: 나중에 채울 내용 (인사말, 여행, 식사예절 등...) -->
+ <ul>
+    {% for (curriculum_id, curriculum) in curriculums %}
+    <li><a href="{{ url_for('curriculum', grade=grade, curriculum_id=curriculum_id) }}">{{ curriculum }}</a></li>
+    {% endfor %}
+ </ul>
+{% endblock %}
