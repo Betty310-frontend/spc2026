@@ -39,10 +39,11 @@ def stream():
 # 클라이언트가 나에게 보내는 API
 @app.route('/send', methods=['POST'])
 def send():
+    username = request.form.get('username', '익명')
     message = request.form.get('message' ,'')
     print('클라이언트로부터 받은 메시지: ', message)
     for q in clients:
-        q.put(f"서버가 받은 메시지: {message}")
+        q.put(f"{username}: {message}")
     return ("", 204)
 
 if __name__ == '__main__':
