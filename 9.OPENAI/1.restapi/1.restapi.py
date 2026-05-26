@@ -6,7 +6,7 @@ import os
 load_dotenv()
 
 openai_api_key = os.getenv('OPENAI_API_KEY')
-openai_request_url = os.getenv('OPENAI_REQUEST_URL')
+openai_request_url = os.getenv('OPENAI_COMPLETIONS_URL')
 openai_model = os.getenv('OPENAI_MODEL')
 
 user_input = input("Enter your message: ") or '강아지를 데려왔어. 강아지 이름을 뭐라고 지을까?'
