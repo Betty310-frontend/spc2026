@@ -15,6 +15,32 @@ const ratingStarsEl = document.getElementById("rating-stars");
 const ratingTextEl = document.getElementById("rating-text");
 let currentReviews = [];
 
+const SKELETON_LINE_FULL = '<span class="skeleton h-4 w-full mb-2"></span>';
+const SKELETON_LINE_80 = '<span class="skeleton h-4 mb-2" style="width:80%"></span>';
+const SKELETON_LINE_60 = '<span class="skeleton h-4" style="width:60%"></span>';
+
+function showProductSkeleton() {
+  productNameEl.innerHTML = '<span class="skeleton h-8 mb-3" style="width:60%"></span>';
+  productDescriptionEl.innerHTML = SKELETON_LINE_FULL + SKELETON_LINE_80 + SKELETON_LINE_60;
+}
+
+function showReviewSkeleton() {
+  aiSummaryTextEl.innerHTML = SKELETON_LINE_FULL + SKELETON_LINE_80 + SKELETON_LINE_60;
+  averageRatingValueEl.innerHTML = '<span class="skeleton h-6" style="width:140px"></span>';
+
+  const skeletonReview = `
+    <div class="border border-gray-200 rounded-lg p-4">
+      <div class="flex items-center justify-between mb-3">
+        <span class="skeleton h-4" style="width:120px"></span>
+        <span class="skeleton h-4" style="width:90px"></span>
+      </div>
+      <span class="skeleton h-4 w-full mb-2"></span>
+      <span class="skeleton h-4" style="width:70%"></span>
+    </div>
+  `;
+  reviewListEl.innerHTML = Array(3).fill(skeletonReview).join("");
+}
+
 function escapeHtml(value) {
   return String(value)
     .replaceAll("&", "&amp;")
@@ -38,6 +64,7 @@ async function loadProduct() {
   productDescriptionEl.textContent = product.description;
   productImageEl.src = product.image;
   productImageEl.alt = product.name;
+  productImageEl.className = "w-full h-72 object-cover rounded-lg bg-gray-100";
 }
 
 function renderReviewSummary(aiSummary, averageRating) {
@@ -205,6 +232,9 @@ async function initPage() {
     return;
   }
 
+  showProductSkeleton();
+  showReviewSkeleton();
+
   try {
     await loadProduct();
     await loadReviews();
@@ -220,6 +250,8 @@ updateRatingStars(0);
 initPage();
 
 document.addEventListener("languageChange", async () => {
+  showProductSkeleton();
+  showReviewSkeleton();
   await loadProduct();
   await loadReviews();
 });

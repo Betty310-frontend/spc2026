@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>상품 상세 | SPC 쇼핑몰</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="/css/skeleton.css" />
   </head>
   <body class="bg-gray-50 text-gray-900">
-    <div id="layout-header"></div>
+    <div id="layout-header" style="min-height: 57px"></div>
     <main class="max-w-5xl mx-auto px-4 py-8">
       <a
         href="/"
@@ -19,15 +20,10 @@
 
       <section id="product-section" class="bg-white rounded-xl shadow-sm p-5 sm:p-6 mb-8">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-          <img
-            id="product-image"
-            src=""
-            alt="상품 이미지"
-            class="w-full h-72 object-cover rounded-lg bg-gray-100"
-          />
+          <img id="product-image" src="" alt="" class="skeleton w-full h-72 rounded-lg" />
           <div>
-            <h1 id="product-name" class="text-3xl font-bold mb-3">상품명</h1>
-            <p id="product-description" class="text-gray-700 leading-relaxed">상품 설명</p>
+            <h1 id="product-name" class="text-3xl font-bold mb-3"></h1>
+            <p id="product-description" class="text-gray-700 leading-relaxed"></p>
           </div>
         </div>
       </section>
@@ -52,19 +48,11 @@
                 </span>
               </div>
 
-              <p
-                id="ai-summary-text"
-                class="text-gray-700 leading-relaxed mb-4"
-                data-i18n="loading"
-              >
-                불러오는 중...
-              </p>
+              <p id="ai-summary-text" class="text-gray-700 leading-relaxed mb-4"></p>
 
               <div class="rounded-xl bg-white/90 border border-blue-100 p-4">
                 <p class="text-xs text-gray-500 mb-1" data-i18n="avg_rating_label">평균 별점</p>
-                <p id="average-rating-value" class="text-lg font-bold text-gray-900">
-                  불러오는 중...
-                </p>
+                <p id="average-rating-value" class="text-lg font-bold text-gray-900"></p>
               </div>
             </div>
           </div>
@@ -83,9 +71,7 @@
                 </select>
               </label>
             </div>
-            <div id="review-list" class="space-y-4">
-              <p class="text-gray-500">불러오는 중...</p>
-            </div>
+            <div id="review-list" class="space-y-4"></div>
           </div>
         </div>
 
@@ -147,7 +133,7 @@
         </aside>
       </section>
     </main>
-    <div id="layout-footer"></div>
+    <div id="layout-footer" style="min-height: 88px"></div>
 
     <script src="/js/layout.js"></script>
     <script src="/js/i18n.js"></script>

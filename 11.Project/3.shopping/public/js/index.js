@@ -1,5 +1,20 @@
 const productListEl = document.getElementById("product-list");
 
+const SKELETON_CARD = `
+  <div class="block border border-gray-200 rounded-lg overflow-hidden">
+    <span class="skeleton w-full h-48"></span>
+    <div class="p-4">
+      <span class="skeleton h-5 mb-3" style="width:70%"></span>
+      <span class="skeleton h-4 mb-2 w-full"></span>
+      <span class="skeleton h-4" style="width:55%"></span>
+    </div>
+  </div>
+`;
+
+function showProductListSkeleton() {
+  productListEl.innerHTML = Array(6).fill(SKELETON_CARD).join("");
+}
+
 function renderProducts(products) {
   if (!Array.isArray(products) || products.length === 0) {
     productListEl.innerHTML = `<p class="text-gray-500">${t("no_products")}</p>`;
@@ -29,6 +44,7 @@ function renderProducts(products) {
 }
 
 async function loadProducts() {
+  showProductListSkeleton();
   try {
     const response = await fetch(`/api/products?lang=${getCurrentLang()}`);
     if (!response.ok) {
