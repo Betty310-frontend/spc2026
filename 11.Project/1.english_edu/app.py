@@ -64,7 +64,7 @@ def curriculum(grade, curriculum_id):
         return render_template('curriculum.html', grade=grade, curriculum_title=curriculum_title, grades=grades)
     return '해당 커리큘럼은 존재하지 않습니다.', 404
 
-@app.route('/chat', methods=['POST'])
+@app.route('/api/chat', methods=['POST'])
 def chat():
     data = request.get_json()
     message = data.get('message', '')
@@ -74,6 +74,7 @@ def chat():
 
     # 세션 히스토리 초기화
     if session_id not in chat_histories:
+        # 실무적으로는 이런 프롬프트는 파일을 따로 관리하는 게 좋지만, 여기서는 간단히 코드에 작성
         system_prompt = f"""당신은 초등학교 {grade}학년 학생을 위한 친절한 영어 선생님입니다.
 현재 학습 주제는 '{curriculum}'입니다.
 

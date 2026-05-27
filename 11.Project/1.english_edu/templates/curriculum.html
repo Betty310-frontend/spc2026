@@ -102,8 +102,8 @@
     return bubble.querySelector('p');
   }
 
-  chatForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
+  chatForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
     const message = userInput.value.trim();
     if (!message) return;
 
@@ -112,7 +112,7 @@
     typingIndicator.classList.remove('d-none');
 
     try {
-      const response = await fetch('/chat', {
+      const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
