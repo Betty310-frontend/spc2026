@@ -233,6 +233,11 @@ def product_detail(product_id):
     # 제품 상세 페이지 렌더링
     return send_from_directory(app.static_folder, 'product_detail.html')
 
+@app.route('/<path:filename>')
+def static_files(filename):
+    # public/ 폴더의 정적 파일 서빙 (layout.js, components/ 등)
+    return send_from_directory(app.static_folder, filename)
+
 # ----------------
 # API 라우팅
 # ----------------
