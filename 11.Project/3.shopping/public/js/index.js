@@ -1,5 +1,14 @@
 const productListEl = document.getElementById("product-list");
 
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
 const SKELETON_CARD = `
   <div class="block border border-gray-200 rounded-lg overflow-hidden">
     <span class="skeleton w-full h-48"></span>
@@ -25,17 +34,17 @@ function renderProducts(products) {
     .map(
       (product) => `
               <a
-                href="/product/${product.id}"
+                href="/product/${escapeHtml(String(product.id))}"
                 class="block border border-gray-200 rounded-lg overflow-hidden hover:shadow-lg transition"
               >
                 <img
-                  src="${product.image}"
-                  alt="${product.name}"
+                  src="${escapeHtml(product.image)}"
+                  alt="${escapeHtml(product.name)}"
                   class="w-full h-48 object-cover"
                 />
                 <div class="p-4">
-                  <h3 class="text-lg font-semibold mb-2">${product.name}</h3>
-                  <p class="text-sm text-gray-600">${product.description}</p>
+                  <h3 class="text-lg font-semibold mb-2">${escapeHtml(product.name)}</h3>
+                  <p class="text-sm text-gray-600">${escapeHtml(product.description)}</p>
                 </div>
               </a>
             `,
@@ -58,7 +67,7 @@ async function loadProducts() {
   }
 }
 
-loadProducts();
+document.addEventListener("translationsReady", loadProducts, { once: true });
 
 document.addEventListener("languageChange", () => {
   loadProducts();

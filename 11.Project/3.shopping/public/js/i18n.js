@@ -54,15 +54,17 @@ function initLanguageSelect() {
     localStorage.setItem("lang", lang);
     await loadTranslations(lang);
     applyTranslations();
+    document.dispatchEvent(new CustomEvent("translationsReady"));
     document.dispatchEvent(new CustomEvent("languageChange", { detail: { lang } }));
   });
 }
 
-// 헤더 로드 완료 → 번역 파일 로드 + 언어 셀렉터 초기화
+// 헤더 로드 완료 → 번역 파일 로드 + 언어 셀렉터 초기화 + translationsReady 발행
 document.addEventListener("headerLoaded", async () => {
   const lang = localStorage.getItem("lang") || "ko";
   await loadTranslations(lang);
   initLanguageSelect();
+  document.dispatchEvent(new CustomEvent("translationsReady"));
 });
 
 // 헤더+푸터 모두 로드 완료 → DOM 전체에 번역 적용

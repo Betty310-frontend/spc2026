@@ -149,7 +149,7 @@ function renderReviews(reviews) {
               <article class="border border-gray-200 rounded-lg p-4">
                 <div class="flex items-center justify-between gap-3 mb-2">
                   <p class="font-semibold">${t("review_rating_label").replace("{rating}", review.rating)} <span class="text-amber-500">${"★".repeat(review.rating)}${"☆".repeat(5 - review.rating)}</span></p>
-                  <p class="text-xs text-gray-500">${formatCreatedAt(review.created_at)}</p>
+                  <p class="text-xs text-gray-500">${escapeHtml(formatCreatedAt(review.created_at))}</p>
                 </div>
                 <p class="text-gray-700 whitespace-pre-wrap">${escapeHtml(review.comment || t("no_content"))}</p>
               </article>
@@ -246,8 +246,10 @@ async function initPage() {
   }
 }
 
-updateRatingStars(0);
-initPage();
+document.addEventListener("translationsReady", () => {
+  updateRatingStars(0);
+  initPage();
+}, { once: true });
 
 document.addEventListener("languageChange", async () => {
   showProductSkeleton();
