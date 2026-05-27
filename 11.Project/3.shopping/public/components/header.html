@@ -1,5 +1,14 @@
 <header class="bg-white border-b border-gray-200 shadow-sm">
-  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center">
-    <a href="/" class="text-xl font-bold"> 🛍️ SPC 쇼핑몰 </a>
+  <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+    <a href="/" class="text-xl font-bold" data-i18n="site_name"> 🛍️ SPC 쇼핑몰 </a>
+    <select
+      id="language-select"
+      class="text-sm border border-gray-300 rounded-md px-2 py-1 bg-white text-gray-700 cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-400"
+    >
+      <option value="ko" selected>🇰🇷 한국어</option>
+      <option value="en">🇺🇸 English</option>
+      <option value="ja">🇯🇵 日本語</option>
+      <option value="zh">🇨🇳 中文</option>
+    </select>
   </div>
 </header>

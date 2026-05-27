@@ -16,6 +16,8 @@ from datetime import datetime, timezone
 from dotenv import load_dotenv
 from openai import OpenAI
 
+import json
+
 from flask import Flask, jsonify, request, send_from_directory
 
 load_dotenv()  # .env 파일에서 환경 변수 로드
@@ -26,6 +28,10 @@ client = OpenAI(api_key=openai_api_key)
 app = Flask(__name__, static_folder='public')
 app.config['JSON_AS_ASCII'] = False
 app.config['JSONIFY_PRETTYPRINT_REGULAR'] = True
+
+# 번역 캐시: (원문, 언어코드) → 번역문
+_translation_cache: dict = {}
+_LANG_NAMES = {'en': 'English', 'ja': 'Japanese', 'zh': 'Simplified Chinese'}
 
 # 제품 목록을 저장할 변수 (예시로 간단한 제품 정보를 담은 리스트를 사용)
 products = [
@@ -148,6 +154,74 @@ def now_iso_utc():
     return datetime.now(timezone.utc).isoformat(timespec='seconds')
 
 
+def get_request_lang() -> str:
+    """요청의 lang 쿼리 파라미터를 읽어 반환합니다. 기본값은 'ko'."""
+    lang = request.args.get('lang', 'ko')
+    return lang if lang in ('ko', 'en', 'ja', 'zh') else 'ko'
+
+
+def translate_batch(texts: list, target_lang: str) -> list:
+    """한국어 문자열 목록을 target_lang으로 번역합니다. 결과는 캐시에 저장됩니다."""
+    if target_lang == 'ko' or not openai_api_key:
+        return list(texts)
+
+    result = [None] * len(texts)
+    uncached_indices = []
+
+    for i, text in enumerate(texts):
+        cached = _translation_cache.get((text, target_lang))
+        if cached is not None:
+            result[i] = cached
+        else:
+            uncached_indices.append(i)
+
+    if not uncached_indices:
+        return result
+
+    uncached_texts = [texts[i] for i in uncached_indices]
+    lang_name = _LANG_NAMES.get(target_lang, 'English')
+    model = os.getenv('OPENAI_MODEL', 'gpt-4.1-mini')
+
+    try:
+        response = client.responses.create(
+            model=model,
+            input=[
+                {
+                    'role': 'system',
+                    'content': (
+                        f'Translate the following JSON array of Korean strings to {lang_name}. '
+                        'Return only a valid JSON array of translated strings in the same order. '
+                        'Use natural, concise phrasing for an e-commerce shopping app. '
+                        'No explanation or markdown fences.'
+                    )
+                },
+                {'role': 'user', 'content': json.dumps(uncached_texts, ensure_ascii=False)}
+            ],
+            temperature=0.1,
+        )
+
+        raw = (getattr(response, 'output_text', '') or '').strip()
+        if raw.startswith('```'):
+            raw = raw.split('\n', 1)[1].rsplit('```', 1)[0]
+
+        translated = json.loads(raw)
+        for i, idx in enumerate(uncached_indices):
+            t_text = translated[i] if i < len(translated) else texts[idx]
+            _translation_cache[(texts[idx], target_lang)] = t_text
+            result[idx] = t_text
+
+    except Exception:
+        for idx in uncached_indices:
+            result[idx] = texts[idx]
+
+    return result
+
+
+def translate_text(text: str, target_lang: str) -> str:
+    """단일 한국어 문자열을 target_lang으로 번역합니다."""
+    return translate_batch([text], target_lang)[0]
+
+
 def build_ai_summary(product_reviews):
     if not product_reviews:
         return '아직 등록된 리뷰가 없습니다.'
@@ -167,12 +241,28 @@ def build_ai_summary(product_reviews):
     return f'리뷰 {len(ratings)}개 기준 평균 {average}점이며, {tone}'
 
 
-def request_openai_review_summary(product, product_reviews):
+_NO_REVIEWS_MSG = {
+    'ko': '아직 등록된 리뷰가 없습니다.',
+    'en': 'No reviews yet.',
+    'ja': 'まだレビューはありません。',
+    'zh': '暂无评价。',
+}
+
+_SUMMARY_LANG_PROMPT = {
+    'ko': '한국어로 2~3문장으로 간결하게 요약하고 핵심 장점/아쉬운 점을 균형 있게 작성하세요.',
+    'en': 'Write a concise 2-3 sentence summary in English, balancing key strengths and shortcomings.',
+    'ja': '日本語で2〜3文で簡潔にまとめ、主な長所と短所をバランスよく記述してください。',
+    'zh': '用中文写2-3句简洁的摘要，均衡地描述主要优点和不足之处。',
+}
+
+
+def request_openai_review_summary(product, product_reviews, lang='ko'):
     if not product_reviews:
-        return '아직 등록된 리뷰가 없습니다.'
+        return _NO_REVIEWS_MSG.get(lang, _NO_REVIEWS_MSG['ko'])
 
     if not openai_api_key:
-        return build_ai_summary(product_reviews)
+        summary = build_ai_summary(product_reviews)
+        return translate_text(summary, lang) if lang != 'ko' else summary
 
     model = os.getenv('OPENAI_MODEL', 'gpt-4.1-mini')
     reviews_text = '\n'.join(
@@ -188,7 +278,7 @@ def request_openai_review_summary(product, product_reviews):
                     'role': 'system',
                     'content': (
                         '당신은 이커머스 리뷰 요약 도우미입니다. '
-                        '한국어로 2~3문장으로 간결하게 요약하고 핵심 장점/아쉬운 점을 균형 있게 작성하세요.'
+                        + _SUMMARY_LANG_PROMPT.get(lang, _SUMMARY_LANG_PROMPT['en'])
                     )
                 },
                 {
@@ -243,17 +333,34 @@ def static_files(filename):
 # ----------------
 @app.route('/api/products', methods=['GET'])
 def get_products():
-    # products를 가져와서 반환
-    return jsonify({'products': products})
+    lang = get_request_lang()
+    if lang == 'ko':
+        return jsonify({'products': products})
+
+    texts = []
+    for p in products:
+        texts.append(p['name'])
+        texts.append(p['description'])
+
+    translated = translate_batch(texts, lang)
+    translated_products = [
+        {**p, 'name': translated[i * 2], 'description': translated[i * 2 + 1]}
+        for i, p in enumerate(products)
+    ]
+    return jsonify({'products': translated_products})
 
 @app.route('/api/products/<int:product_id>', methods=['GET'])
 def get_product(product_id):
-    # product_id에 해당하는 제품 정보를 가져와서 반환
     product = next((p for p in products if p['id'] == product_id), None)
-    if product:
-        return jsonify({'product': product})
-    else:
+    if not product:
         return jsonify({'error': 'Product not found'}), 404
+
+    lang = get_request_lang()
+    if lang == 'ko':
+        return jsonify({'product': product})
+
+    translated = translate_batch([product['name'], product['description']], lang)
+    return jsonify({'product': {**product, 'name': translated[0], 'description': translated[1]}})
 
 @app.route('/api/reviews', methods=['GET'])
 def get_reviews():
@@ -305,11 +412,20 @@ def get_product_reviews(product_id):
     if not product:
         return jsonify({'error': 'Product not found'}), 404
 
+    lang = get_request_lang()
     product_reviews = [review for review in reviews if review.get('product_id') == product_id]
     average_rating = round(
         sum(review['rating'] for review in product_reviews) / len(product_reviews),
         1
     ) if product_reviews else None
+
+    if lang != 'ko' and product_reviews:
+        comments = [r.get('comment', '') for r in product_reviews]
+        translated_comments = translate_batch(comments, lang)
+        product_reviews = [
+            {**r, 'comment': translated_comments[i]}
+            for i, r in enumerate(product_reviews)
+        ]
 
     return jsonify({
         'reviews': product_reviews,
@@ -360,7 +476,8 @@ def get_product_ai_summary(product_id):
         sum(review['rating'] for review in product_reviews) / len(product_reviews),
         1
     ) if product_reviews else None
-    ai_summary_text = request_openai_review_summary(product, product_reviews)
+    lang = get_request_lang()
+    ai_summary_text = request_openai_review_summary(product, product_reviews, lang)
 
     return jsonify({
         'ai_summary': ai_summary_text,

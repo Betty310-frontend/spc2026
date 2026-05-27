@@ -11,7 +11,9 @@ async function loadComponent(selector, url) {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-  loadComponent('#layout-header', '/components/header.html');
-  loadComponent('#layout-footer', '/components/footer.html');
+document.addEventListener("DOMContentLoaded", async () => {
+  await loadComponent("#layout-header", "/components/header.html");
+  document.dispatchEvent(new CustomEvent("headerLoaded"));
+  await loadComponent("#layout-footer", "/components/footer.html");
+  document.dispatchEvent(new CustomEvent("layoutLoaded"));
 });

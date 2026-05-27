@@ -2,7 +2,7 @@ const productListEl = document.getElementById("product-list");
 
 function renderProducts(products) {
   if (!Array.isArray(products) || products.length === 0) {
-    productListEl.innerHTML = '<p class="text-gray-500">등록된 제품이 없습니다.</p>';
+    productListEl.innerHTML = `<p class="text-gray-500">${t("no_products")}</p>`;
     return;
   }
 
@@ -30,7 +30,7 @@ function renderProducts(products) {
 
 async function loadProducts() {
   try {
-    const response = await fetch("/api/products");
+    const response = await fetch(`/api/products?lang=${getCurrentLang()}`);
     if (!response.ok) {
       throw new Error("제품 목록을 불러오지 못했습니다.");
     }
@@ -43,3 +43,7 @@ async function loadProducts() {
 }
 
 loadProducts();
+
+document.addEventListener("languageChange", () => {
+  loadProducts();
+});

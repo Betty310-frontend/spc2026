@@ -25,7 +25,7 @@ function escapeHtml(value) {
 }
 
 async function loadProduct() {
-  const response = await fetch(`/api/products/${productId}`);
+  const response = await fetch(`/api/products/${productId}?lang=${getCurrentLang()}`);
   if (!response.ok) {
     throw new Error("상품 정보를 불러오지 못했습니다.");
   }
@@ -33,7 +33,7 @@ async function loadProduct() {
   const data = await response.json();
   const product = data.product;
 
-  document.title = `${product.name} | SPC 쇼핑몰`;
+  document.title = `${product.name} | ${t("site_name")}`;
   productNameEl.textContent = product.name;
   productDescriptionEl.textContent = product.description;
   productImageEl.src = product.image;
@@ -45,7 +45,7 @@ function renderReviewSummary(aiSummary, averageRating) {
     ? `${"★".repeat(Math.round(averageRating))}${"☆".repeat(5 - Math.round(averageRating))}`
     : "N/A";
 
-  aiSummaryTextEl.textContent = aiSummary || "아직 등록된 리뷰가 없습니다.";
+  aiSummaryTextEl.textContent = aiSummary || t("no_reviews");
   averageRatingValueEl.textContent = stars !== "N/A" ? `${averageRating} (${stars})` : "N/A";
 }
 
@@ -64,20 +64,23 @@ function updateRatingStars(selectedValue) {
     }
   });
 
-  ratingTextEl.textContent = score > 0 ? `${score}점 선택` : "선택하세요.";
+  ratingTextEl.textContent =
+    score > 0 ? t("rating_selected").replace("{score}", score) : t("rating_placeholder");
 }
 
 function formatCreatedAt(createdAt) {
   if (!createdAt) {
-    return "시간 정보 없음";
+    return t("no_time_info");
   }
 
   const date = new Date(createdAt);
   if (Number.isNaN(date.getTime())) {
-    return "시간 정보 없음";
+    return t("no_time_info");
   }
 
-  return date.toLocaleString("ko-KR", {
+  const langLocaleMap = { ko: "ko-KR", en: "en-US", ja: "ja-JP", zh: "zh-CN" };
+  const currentLang = localStorage.getItem("lang") || "ko";
+  return date.toLocaleString(langLocaleMap[currentLang] || "ko-KR", {
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
@@ -107,7 +110,7 @@ function sortReviews(reviews) {
 
 function renderReviews(reviews) {
   if (!Array.isArray(reviews) || reviews.length === 0) {
-    reviewListEl.innerHTML = '<p class="text-gray-500">아직 등록된 리뷰가 없습니다.</p>';
+    reviewListEl.innerHTML = `<p class="text-gray-500">${t("no_reviews")}</p>`;
     return;
   }
 
@@ -118,10 +121,10 @@ function renderReviews(reviews) {
       (review) => `
               <article class="border border-gray-200 rounded-lg p-4">
                 <div class="flex items-center justify-between gap-3 mb-2">
-                  <p class="font-semibold">평점: ${review.rating} / 5 <span class="text-amber-500">${"★".repeat(review.rating)}${"☆".repeat(5 - review.rating)}</span></p>
+                  <p class="font-semibold">${t("review_rating_label").replace("{rating}", review.rating)} <span class="text-amber-500">${"★".repeat(review.rating)}${"☆".repeat(5 - review.rating)}</span></p>
                   <p class="text-xs text-gray-500">${formatCreatedAt(review.created_at)}</p>
                 </div>
-                <p class="text-gray-700 whitespace-pre-wrap">${escapeHtml(review.comment || "내용 없음")}</p>
+                <p class="text-gray-700 whitespace-pre-wrap">${escapeHtml(review.comment || t("no_content"))}</p>
               </article>
             `,
     )
@@ -129,9 +132,10 @@ function renderReviews(reviews) {
 }
 
 async function loadReviews() {
+  const lang = getCurrentLang();
   const [reviewsResponse, summaryResponse] = await Promise.all([
-    fetch(`/api/products/${productId}/reviews`),
-    fetch(`/api/products/${productId}/ai-summary`),
+    fetch(`/api/products/${productId}/reviews?lang=${lang}`),
+    fetch(`/api/products/${productId}/ai-summary?lang=${lang}`),
   ]);
 
   if (!reviewsResponse.ok || !summaryResponse.ok) {
@@ -162,12 +166,12 @@ reviewFormEl.addEventListener("submit", async (event) => {
   const comment = document.getElementById("comment").value.trim();
 
   if (!selectedRating) {
-    alert("평점을 선택해주세요.");
+    alert(t("select_rating_alert"));
     return;
   }
 
   sendBtnEl.disabled = true;
-  sendBtnEl.textContent = "등록 중...";
+  sendBtnEl.textContent = t("submitting");
 
   const response = await fetch(`/api/products/${productId}/reviews`, {
     method: "POST",
@@ -181,9 +185,9 @@ reviewFormEl.addEventListener("submit", async (event) => {
   });
 
   if (!response.ok) {
-    alert("리뷰 등록에 실패했습니다. 잠시 후 다시 시도해주세요.");
+    alert(t("review_submit_failed"));
     sendBtnEl.disabled = false;
-    sendBtnEl.textContent = "등록";
+    sendBtnEl.textContent = t("submit_review_short");
     return;
   }
 
@@ -191,13 +195,13 @@ reviewFormEl.addEventListener("submit", async (event) => {
   updateRatingStars(0);
   await loadReviews();
   sendBtnEl.disabled = false;
-  sendBtnEl.textContent = "등록";
+  sendBtnEl.textContent = t("submit_review_short");
 });
 
 async function initPage() {
   if (!Number.isInteger(productId) || productId <= 0) {
-    productNameEl.textContent = "유효하지 않은 상품입니다.";
-    productDescriptionEl.textContent = "상품 ID를 확인해주세요.";
+    productNameEl.textContent = t("invalid_product");
+    productDescriptionEl.textContent = t("check_product_id");
     return;
   }
 
@@ -205,12 +209,17 @@ async function initPage() {
     await loadProduct();
     await loadReviews();
   } catch (error) {
-    productNameEl.textContent = "상품 정보를 불러오지 못했습니다.";
-    productDescriptionEl.textContent = "잠시 후 다시 시도해주세요.";
-    reviewSummaryEl.innerHTML = '<p class="text-red-500">리뷰 정보를 불러오지 못했습니다.</p>';
+    productNameEl.textContent = t("product_load_failed");
+    productDescriptionEl.textContent = t("retry_later");
+    reviewSummaryEl.innerHTML = `<p class="text-red-500">${t("reviews_load_failed")}</p>`;
     reviewListEl.innerHTML = "";
   }
 }
 
 updateRatingStars(0);
 initPage();
+
+document.addEventListener("languageChange", async () => {
+  await loadProduct();
+  await loadReviews();
+});

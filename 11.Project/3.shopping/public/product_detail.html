@@ -9,7 +9,11 @@
   <body class="bg-gray-50 text-gray-900">
     <div id="layout-header"></div>
     <main class="max-w-5xl mx-auto px-4 py-8">
-      <a href="/" class="inline-block text-sm text-blue-600 hover:underline mb-6">
+      <a
+        href="/"
+        class="inline-block text-sm text-blue-600 hover:underline mb-6"
+        data-i18n="back_to_list"
+      >
         ← 목록으로 돌아가기
       </a>
 
@@ -37,18 +41,27 @@
             <div class="absolute -top-8 -right-8 w-28 h-28 rounded-full bg-blue-100/50"></div>
             <div class="relative">
               <div class="flex items-center justify-between gap-3 mb-4">
-                <h2 class="text-2xl font-bold text-blue-900">리뷰 요약</h2>
+                <h2 class="text-2xl font-bold text-blue-900" data-i18n="review_summary_title">
+                  리뷰 요약
+                </h2>
                 <span
                   class="inline-flex items-center rounded-full bg-blue-600 text-white text-xs font-semibold px-3 py-1"
+                  data-i18n="ai_badge"
                 >
                   AI 분석
                 </span>
               </div>
 
-              <p id="ai-summary-text" class="text-gray-700 leading-relaxed mb-4">불러오는 중...</p>
+              <p
+                id="ai-summary-text"
+                class="text-gray-700 leading-relaxed mb-4"
+                data-i18n="loading"
+              >
+                불러오는 중...
+              </p>
 
               <div class="rounded-xl bg-white/90 border border-blue-100 p-4">
-                <p class="text-xs text-gray-500 mb-1">평균 별점</p>
+                <p class="text-xs text-gray-500 mb-1" data-i18n="avg_rating_label">평균 별점</p>
                 <p id="average-rating-value" class="text-lg font-bold text-gray-900">
                   불러오는 중...
                 </p>
@@ -58,15 +71,15 @@
 
           <div class="bg-white rounded-xl shadow-sm p-5 sm:p-6">
             <div class="flex items-center justify-between gap-3 mb-4">
-              <h2 class="text-2xl font-bold">리뷰 목록</h2>
+              <h2 class="text-2xl font-bold" data-i18n="review_list_title">리뷰 목록</h2>
               <label class="text-sm text-gray-600">
-                정렬
+                <span data-i18n="sort_label">정렬</span>
                 <select
                   id="sort-select"
                   class="ml-2 border border-gray-300 rounded-md px-2 py-1 text-sm"
                 >
-                  <option value="latest">최신순</option>
-                  <option value="rating">평점순</option>
+                  <option value="latest" data-i18n="sort_latest">최신순</option>
+                  <option value="rating" data-i18n="sort_rating">평점순</option>
                 </select>
               </label>
             </div>
@@ -77,10 +90,10 @@
         </div>
 
         <aside class="bg-white rounded-xl shadow-sm p-5 sm:p-6 h-fit">
-          <h2 class="text-2xl font-bold mb-4">리뷰 작성</h2>
+          <h2 class="text-2xl font-bold mb-4" data-i18n="write_review_title">리뷰 작성</h2>
           <form id="review-form" class="space-y-4">
             <div>
-              <p class="font-medium mb-2">평점</p>
+              <p class="font-medium mb-2" data-i18n="rating_label">평점</p>
               <div id="rating-stars" class="flex items-center gap-1 text-3xl select-none">
                 <label class="cursor-pointer" title="1점">
                   <input type="radio" name="rating" value="1" class="sr-only" />
@@ -102,17 +115,23 @@
                   <input type="radio" name="rating" value="5" class="sr-only" />
                   <span data-star="5" class="text-gray-300">★</span>
                 </label>
-                <span id="rating-text" class="ml-2 text-sm text-gray-500">선택하세요.</span>
+                <span
+                  id="rating-text"
+                  class="ml-2 text-sm text-gray-500"
+                  data-i18n="rating_placeholder"
+                  >선택하세요.</span
+                >
               </div>
             </div>
 
             <div>
-              <label for="comment" class="font-medium">리뷰 내용</label>
+              <label for="comment" class="font-medium" data-i18n="comment_label">리뷰 내용</label>
               <textarea
                 id="comment"
                 rows="5"
                 class="mt-2 w-full border border-gray-300 rounded-lg p-3 resize-none"
                 placeholder="제품에 대한 솔직한 후기를 남겨주세요."
+                data-i18n-placeholder="comment_placeholder"
               ></textarea>
             </div>
 
@@ -120,6 +139,7 @@
               type="submit"
               id="send-btn"
               class="w-full bg-blue-600 text-white rounded-lg py-2.5 font-semibold hover:bg-blue-700"
+              data-i18n="submit_review"
             >
               리뷰 등록
             </button>
@@ -130,6 +150,7 @@
     <div id="layout-footer"></div>
 
     <script src="/js/layout.js"></script>
+    <script src="/js/i18n.js"></script>
     <script src="/js/detail.js"></script>
   </body>
 </html>
