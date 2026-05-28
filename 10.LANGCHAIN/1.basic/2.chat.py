@@ -19,6 +19,7 @@ prompt2 = '게임 회사를 창업하려고 하는데, 이름 후보군 3개 지
 print(llm2.invoke(prompt2))
 
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
+
 prompt3 = [
     SystemMessage(content='당신은 창의력이 높은 작명가입니다.'),
     HumanMessage(content='게임 회사를 창업하려고 해. 이름 후보군 3개 지어줘.'),

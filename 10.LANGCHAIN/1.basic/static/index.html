@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SPC 작명소</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <div class="min-h-screen bg-gradient-to-b from-sky-50 to-white py-10 px-4">
+      <div
+        class="max-w-2xl mx-auto bg-white border border-sky-100 rounded-2xl shadow-sm p-6 md:p-8"
+      >
+        <h1 class="text-3xl font-extrabold tracking-tight text-slate-800 mb-2">SPC 작명소</h1>
+        <p class="text-slate-500 mb-6">
+          상품 키워드를 입력하면 기억하기 쉬운 이름을 추천해드립니다.
+        </p>
+        <form id="name-form" class="flex flex-col sm:flex-row gap-2 mb-3">
+          <input
+            type="text"
+            name="product-name"
+            placeholder="회사 상품을 입력하세요..."
+            class="border border-slate-300 p-3 flex-1 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-300"
+            required
+          />
+          <button
+            type="submit"
+            class="bg-sky-600 text-white px-5 py-3 rounded-lg cursor-pointer hover:bg-sky-700 disabled:opacity-60 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2 min-w-28"
+          >
+            <span id="button-text">생성</span>
+            <svg
+              id="loading-spinner"
+              class="hidden w-4 h-4 animate-spin"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+              aria-hidden="true"
+            >
+              <circle
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-opacity="0.25"
+                stroke-width="4"
+              ></circle>
+              <path
+                d="M22 12a10 10 0 0 1-10 10"
+                stroke="currentColor"
+                stroke-width="4"
+                stroke-linecap="round"
+              ></path>
+            </svg>
+          </button>
+        </form>
+        <p id="status-text" class="text-sm text-slate-500 min-h-5" aria-live="polite"></p>
+
+        <div class="mt-6">
+          <h2 class="text-2xl font-bold mb-2 text-slate-800">결과</h2>
+          <ul class="list-disc list-inside space-y-1 text-slate-700" id="results"></ul>
+        </div>
+      </div>
+    </div>
+    <script>
+      const form = document.getElementById("name-form");
+      const resultsList = document.getElementById("results");
+      const productInput = form.querySelector('input[name="product-name"]');
+      const submitButton = form.querySelector('button[type="submit"]');
+      const loadingSpinner = document.getElementById("loading-spinner");
+      const buttonText = document.getElementById("button-text");
+      const statusText = document.getElementById("status-text");
+
+      function setLoadingState(isLoading) {
+        productInput.disabled = isLoading;
+        submitButton.disabled = isLoading;
+        loadingSpinner.classList.toggle("hidden", !isLoading);
+        buttonText.textContent = isLoading ? "생성 중" : "생성";
+        statusText.textContent = isLoading
+          ? "이름을 생성하고 있습니다. 잠시만 기다려주세요..."
+          : "";
+      }
+
+      function normalizeNames(chatbotResult) {
+        if (Array.isArray(chatbotResult)) {
+          return chatbotResult.filter(Boolean);
+        }
+        if (typeof chatbotResult === "string") {
+          return chatbotResult
+            .split("\n")
+            .map((line) => line.replace(/^[-*\d.\s]+/, "").trim())
+            .filter(Boolean);
+        }
+        return [];
+      }
+
+      // 1. 전송이 눌리면
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        // 2. 입력값을 가져와서
+        const formData = new FormData(form);
+        const productName = String(formData.get("product-name") || "").trim();
+
+        if (!productName) {
+          statusText.textContent = "상품 키워드를 먼저 입력해주세요.";
+          productInput.focus();
+          return;
+        }
+
+        setLoadingState(true);
+        resultsList.innerHTML = "";
+
+        try {
+          // 3. 벡엔드로 보낸다
+          const response = await fetch("/api/name", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ product: productName }),
+          });
+
+          if (!response.ok) {
+            throw new Error(`요청 실패: ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          // 4. 결과를 받아와서
+          if (data.result === "success") {
+            const names = normalizeNames(data.chatbot);
+
+            if (names.length === 0) {
+              statusText.textContent = "결과를 생성하지 못했습니다. 다시 시도해주세요.";
+              return;
+            }
+
+            // 5. 화면에 출력한다.
+            names.forEach((name) => {
+              const li = document.createElement("li");
+              li.textContent = name;
+              resultsList.appendChild(li);
+            });
+            statusText.textContent = `${names.length}개의 이름을 추천했습니다.`;
+          } else {
+            statusText.textContent = "이름 생성에 실패했습니다. 다시 시도해주세요.";
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          statusText.textContent = "오류가 발생했습니다. 잠시 후 다시 시도해주세요.";
+        } finally {
+          setLoadingState(false);
+        }
+      });
+    </script>
+  </body>
+</html>
