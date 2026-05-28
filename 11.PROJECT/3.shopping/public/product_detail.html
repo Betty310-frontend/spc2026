@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>상품 상세 | SPC 쇼핑몰</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="/css/skeleton.css" />
+  </head>
+  <body class="bg-gray-50 text-gray-900">
+    <div id="layout-header" style="min-height: 57px"></div>
+    <main class="max-w-5xl mx-auto px-4 py-8">
+      <a
+        href="/"
+        class="inline-block text-sm text-blue-600 hover:underline mb-6"
+        data-i18n="back_to_list"
+      >
+        ← 목록으로 돌아가기
+      </a>
+
+      <section id="product-section" class="bg-white rounded-xl shadow-sm p-5 sm:p-6 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+          <img id="product-image" src="" alt="" class="skeleton w-full h-72 rounded-lg" />
+          <div>
+            <h1 id="product-name" class="text-3xl font-bold mb-3"></h1>
+            <p id="product-description" class="text-gray-700 leading-relaxed"></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="lg:col-span-2">
+          <div
+            id="review-summary"
+            class="relative overflow-hidden rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 via-white to-sky-50 shadow-sm p-5 sm:p-6 mb-6"
+          >
+            <div class="absolute -top-8 -right-8 w-28 h-28 rounded-full bg-blue-100/50"></div>
+            <div class="relative">
+              <div class="flex items-center justify-between gap-3 mb-4">
+                <h2 class="text-2xl font-bold text-blue-900" data-i18n="review_summary_title">
+                  리뷰 요약
+                </h2>
+                <span
+                  class="inline-flex items-center rounded-full bg-blue-600 text-white text-xs font-semibold px-3 py-1"
+                  data-i18n="ai_badge"
+                >
+                  AI 분석
+                </span>
+              </div>
+
+              <p id="ai-summary-text" class="text-gray-700 leading-relaxed mb-4"></p>
+
+              <div class="rounded-xl bg-white/90 border border-blue-100 p-4">
+                <p class="text-xs text-gray-500 mb-1" data-i18n="avg_rating_label">평균 별점</p>
+                <p id="average-rating-value" class="text-lg font-bold text-gray-900"></p>
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-white rounded-xl shadow-sm p-5 sm:p-6">
+            <div class="flex items-center justify-between gap-3 mb-4">
+              <h2 class="text-2xl font-bold" data-i18n="review_list_title">리뷰 목록</h2>
+              <label class="text-sm text-gray-600">
+                <span data-i18n="sort_label">정렬</span>
+                <select
+                  id="sort-select"
+                  class="ml-2 border border-gray-300 rounded-md px-2 py-1 text-sm"
+                >
+                  <option value="latest" data-i18n="sort_latest">최신순</option>
+                  <option value="rating" data-i18n="sort_rating">평점순</option>
+                </select>
+              </label>
+            </div>
+            <div id="review-list" class="space-y-4"></div>
+          </div>
+        </div>
+
+        <aside class="bg-white rounded-xl shadow-sm p-5 sm:p-6 h-fit">
+          <h2 class="text-2xl font-bold mb-4" data-i18n="write_review_title">리뷰 작성</h2>
+          <form id="review-form" class="space-y-4">
+            <div>
+              <p class="font-medium mb-2" data-i18n="rating_label">평점</p>
+              <div id="rating-stars" class="flex items-center gap-1 text-3xl select-none">
+                <label class="cursor-pointer" title="1점">
+                  <input type="radio" name="rating" value="1" class="sr-only" />
+                  <span data-star="1" class="text-gray-300">★</span>
+                </label>
+                <label class="cursor-pointer" title="2점">
+                  <input type="radio" name="rating" value="2" class="sr-only" />
+                  <span data-star="2" class="text-gray-300">★</span>
+                </label>
+                <label class="cursor-pointer" title="3점">
+                  <input type="radio" name="rating" value="3" class="sr-only" />
+                  <span data-star="3" class="text-gray-300">★</span>
+                </label>
+                <label class="cursor-pointer" title="4점">
+                  <input type="radio" name="rating" value="4" class="sr-only" />
+                  <span data-star="4" class="text-gray-300">★</span>
+                </label>
+                <label class="cursor-pointer" title="5점">
+                  <input type="radio" name="rating" value="5" class="sr-only" />
+                  <span data-star="5" class="text-gray-300">★</span>
+                </label>
+                <span
+                  id="rating-text"
+                  class="ml-2 text-sm text-gray-500"
+                  data-i18n="rating_placeholder"
+                  >선택하세요.</span
+                >
+              </div>
+            </div>
+
+            <div>
+              <label for="comment" class="font-medium" data-i18n="comment_label">리뷰 내용</label>
+              <textarea
+                id="comment"
+                rows="5"
+                class="mt-2 w-full border border-gray-300 rounded-lg p-3 resize-none"
+                placeholder="제품에 대한 솔직한 후기를 남겨주세요."
+                data-i18n-placeholder="comment_placeholder"
+              ></textarea>
+            </div>
+
+            <button
+              type="submit"
+              id="send-btn"
+              class="w-full bg-blue-600 text-white rounded-lg py-2.5 font-semibold hover:bg-blue-700"
+              data-i18n="submit_review"
+            >
+              리뷰 등록
+            </button>
+          </form>
+        </aside>
+      </section>
+    </main>
+    <div id="layout-footer" style="min-height: 88px"></div>
+
+    <script src="/js/layout.js"></script>
+    <script src="/js/i18n.js"></script>
+    <script src="/js/detail.js"></script>
+  </body>
+</html>

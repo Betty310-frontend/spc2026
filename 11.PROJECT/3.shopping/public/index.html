@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SPC 쇼핑몰</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="/css/skeleton.css" />
+  </head>
+  <body>
+    <div id="layout-header" style="min-height: 57px"></div>
+    <main class="max-w-6xl mx-auto px-4 py-8">
+      <!-- 제품 목록 -->
+      <section class="mb-10">
+        <h2 class="text-2xl font-bold mb-4" data-i18n="product_list_title">제품 목록</h2>
+        <div id="product-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+          <!-- 제품 카드가 여기에 추가됩니다 -->
+        </div>
+      </section>
+    </main>
+    <div id="layout-footer" style="min-height: 88px"></div>
+
+    <script src="/js/layout.js"></script>
+    <script src="/js/i18n.js"></script>
+    <script src="/js/index.js"></script>
+  </body>
+</html>
