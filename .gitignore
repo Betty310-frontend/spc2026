@@ -63,3 +63,4 @@ uploads/
 *.db
 *.sqlite
 *.sqlite3
+history.json
