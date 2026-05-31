@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI 챗봇 – {{ username }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body>
+
+<header>
+  <span class="title">🤖 AI 챗봇</span>
+  <div class="user-info">
+    <span id="history-count"></span>
+    <span class="badge">👤 {{ username }}</span>
+    <button class="btn-header" onclick="clearHistory()">대화 초기화</button>
+    <a href="/logout"><button class="btn-header">로그아웃</button></a>
+  </div>
+</header>
+
+<div id="chat-box">
+  {% if chat_history %}
+    {% for msg in chat_history %}
+      {% if msg.role == 'user' %}
+        <div class="msg-row user">
+          <div class="avatar">👤</div>
+          <div class="bubble">{{ msg.content }}</div>
+        </div>
+      {% else %}
+        <div class="msg-row ai">
+          <div class="avatar">🤖</div>
+          <div class="bubble">{{ msg.content }}</div>
+        </div>
+      {% endif %}
+    {% endfor %}
+  {% else %}
+    <div class="empty-state" id="empty-state">
+      <div class="icon">💬</div>
+      <p>무엇이든 물어보세요!</p>
+    </div>
+  {% endif %}
+</div>
+
+<div id="input-area">
+  <textarea id="user-input" placeholder="메시지를 입력하세요 (Shift+Enter: 줄바꿈, Enter: 전송)" rows="1"></textarea>
+  <button id="send-btn" onclick="sendMessage()">➤</button>
+</div>
+
+<script>
+    const MAX_HISTORY = 20;
+    let msgCount = {{ chat_history | length }};
+
+    // ── 히스토리 카운터 업데이트 ──────────────────────────────────
+    function updateCounter() {
+        document.getElementById('history-count').textContent =
+        `대화 ${msgCount} / ${MAX_HISTORY}`;
+    }
+    updateCounter();
+</script>
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

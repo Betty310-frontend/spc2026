@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>로그인</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+</head>
+<body class="login-page">
+  <div class="login-card">
+    <h1>로그인</h1>
+
+    {% if error %}
+      <div class="error-msg">{{ error }}</div>
+    {% endif %}
+
+    <form method="POST" action="/login">
+      <div class="form-group">
+        <label for="username">아이디</label>
+        <input type="text" id="username" name="username" placeholder="아이디를 입력하세요" required autofocus />
+      </div>
+      <div class="form-group">
+        <label for="password">비밀번호</label>
+        <input type="password" id="password" name="password" placeholder="비밀번호를 입력하세요" required />
+      </div>
+      <button type="submit" class="btn-login">로그인</button>
+    </form>
+
+    <p class="hint">테스트 계정: user1 / user2 / user3 &nbsp;|&nbsp; 비밀번호: 1234</p>
+  </div>
+</body>
+</html>
