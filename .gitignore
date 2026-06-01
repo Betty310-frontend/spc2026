@@ -69,3 +69,7 @@ chroma_db/
 history.json
 *.pdf
 *.txt
+
+# Ignore all files except requirements.txt
+!requirements.txt
+!**/requirements.txt
