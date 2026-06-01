@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1. Simple LangChain RAG</title>
+<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="container mx-auto">
+  <h1 class="text-2xl font-bold mb-4">RAG 챗봇</h1>
+  <div>
+    <div class="mb-4">
+      <h2 class="text-xl font-semibold mb-2">PDF 업로드</h2>
+      <form id="upload-form" enctype="multipart/form-data" class="flex items-center gap-2">
+        <input type="file" name="file" class="border border-gray-300 p-2 rounded flex-1" accept=".pdf"/>
+        <button type="submit" class="bg-blue-500 text-white p-2 cursor-pointer rounded hover:bg-blue-600 disabled:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed" disabled>업로드</button>
+      </form>
+      <div>
+        <h3 class="text-lg font-medium mt-4">업로드된 파일 목록</h3>
+        <ul id="upload-result" class="mt-2 text-sm text-gray-600">
+          업로드된 파일이 없습니다.
+        </ul>
+      </div>
+    </div>
+    <div class="mb-4">
+      <h2 class="text-xl font-semibold mb-2">질문하기</h2>
+      <form id="ask-form" class="flex items-center gap-2">
+        <input type="text" name="question" placeholder="질문을 입력하세요" class="border border-gray-300 p-2 w-full rounded flex-1" required/>
+        <button type="submit" class="bg-green-500 text-white p-2 cursor-pointer rounded hover:bg-green-600">질문하기</button>
+      </form>
+    </div>
+    <div class="mb-4">
+      <h2 class="text-xl font-semibold mb-2">답변</h2>
+      <pre id="answer" class="mt-4 p-4 border border-gray-300 bg-gray-100 rounded whitespace-pre-wrap overflow-y-auto"></pre>
+    </div>
+  </div>
+<script>
+  // /files 엔드포인트에서 업로드된 파일 목록을 받아와서 #upload-result 영역에 출력
+  const uploadResult = document.getElementById('upload-result');
+
+  function renderFileList(files) {
+    uploadResult.innerHTML = '';
+    if (files.length === 0) {
+      uploadResult.textContent = '업로드된 파일이 없습니다.';
+      return;
+    }
+    files.forEach(file => {
+      const fileNameEl = document.createElement('li');
+      fileNameEl.textContent = file.source;
+      uploadResult.appendChild(fileNameEl);
+
+      const delButton = document.createElement('button');
+      delButton.textContent = '삭제';
+      delButton.dataset.source = file.source;
+      delButton.className = 'ml-2 text-red-500 hover:text-red-700';
+      fileNameEl.appendChild(delButton);
+    });
+  }
+  async function loadFiles(){
+    const response = await fetch('/files');
+    const files = await response.json();
+    console.log('Loaded files:', files);
+    renderFileList(files.files);
+  }
+
+  // 삭제 버튼 클릭 시 해당 파일 삭제 요청 보내기
+  uploadResult.addEventListener('click', async (event) => {
+    if (event.target.tagName === 'BUTTON') {
+      const source = event.target.dataset.source;
+      if (!confirm(`정말 "${source}" 파일을 삭제하시겠습니까?`)) {
+        return;
+      }
+      
+      try {
+        const response = await fetch(`/delete/${encodeURIComponent(source)}`, { method: 'DELETE' });
+        if (response.status === 200) {
+          loadFiles();
+        } else {
+          console.error('Failed to delete file:', await response.text());
+        }
+      } catch (error) {
+        console.error('Error deleting file:', error);
+      }
+    }
+  });
+
+
+  // 1. "업로드" 버튼을 통해서 문서 전송 (fetch('/upload') => 결과 받아서 성공/실패 여부 출력)
+  const uploadForm = document.getElementById('upload-form');
+  const uploadInput = uploadForm.querySelector('input[type="file"]');
+
+  uploadInput.addEventListener('change', (event) => {
+    const fileInput = event.target;
+    uploadForm.querySelector('button[type="submit"]').disabled = !fileInput.files.length;
+  });
+
+  uploadForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const formData = new FormData(uploadForm);
+    try {
+      const response = await fetch('/upload', {
+        method: 'POST',
+        body: formData
+      });
+      await response.json();
+      if (response.status === 200) {
+        uploadInput.value = '';
+        uploadForm.querySelector('button[type="submit"]').disabled = true;
+      }
+      loadFiles();
+    } catch (error) {
+      console.error('Error uploading file:', error);
+    }
+  })
+
+  // 2. "질문하기" 버튼을 통해서 질문한다. (fetch('/ask') => 결과 받아서 아래 #answer 영역에 출력)
+  const askForm = document.getElementById('ask-form');
+  const answerDiv = document.getElementById('answer');
+
+  askForm.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    answerDiv.textContent = '답변을 불러오는 중입니다...';
+
+    const formData = new FormData(askForm);
+    const question = formData.get('question').trim();
+
+    try {
+      const response = await fetch('/ask', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ question })
+      });
+      const result = await response.json();
+
+      answerDiv.textContent = result.answer || result.error;
+      answerDiv.classList.toggle('text-gray-800', response.status === 200);
+      answerDiv.classList.toggle('text-red-600', response.status !== 200);
+      
+    } catch (error) {
+      console.error('Error asking question:', error);
+      answerDiv.textContent = '질문 처리 중 오류가 발생했습니다.';
+      answerDiv.classList.toggle('text-gray-800', false);
+      answerDiv.classList.toggle('text-red-600', true);
+    }
+  });
+</script>
+</body>
+</html>
