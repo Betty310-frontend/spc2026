@@ -33,6 +33,7 @@ SYSTEM = """
 
     환율/주가 같은 수치 데이터는 반드시 도구를 통해서 확인하세요. (추측 또는 과거 데이터 이용 금지)
     출처 링크가 있으면 반드시 함께 제시하세요.
+    금융 정보 외 질문에는 답변하지 마세요.
 """
 
 agent = create_agent(llm, TOOLS, system_prompt=SYSTEM)
