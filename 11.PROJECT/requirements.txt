@@ -1,0 +1,19 @@
+# Web Framework
+flask
+
+# OpenAI
+openai
+
+# LangChain
+langchain
+langchain-openai
+langchain-core
+
+# Environment Variables
+python-dotenv
+
+# HTTP Requests
+requests
+
+# Finance
+yfinance
