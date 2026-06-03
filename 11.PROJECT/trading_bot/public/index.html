@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trading Bot Dashboard</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/static/css/style.css" />
+  </head>
+  <body>
+    <!-- ── TICKER BAR ────────────────────────────────────────────── -->
+    <div class="ticker-bar">
+      <div class="ticker-track" id="tickerTrack">
+        <span class="ticker-item" id="tk-usd">USD/KRW: ─</span>
+        <span class="ticker-item" id="tk-AAPL">AAPL: ─</span>
+        <span class="ticker-item" id="tk-MSFT">MSFT: ─</span>
+        <span class="ticker-item" id="tk-NVDA">NVDA: ─</span>
+        <span class="ticker-item" id="tk-TSLA">TSLA: ─</span>
+        <span class="ticker-item" id="tk-AMZN">AMZN: ─</span>
+        <!-- duplicate for seamless scroll -->
+        <span class="ticker-item" id="tk-usd2">USD/KRW: ─</span>
+        <span class="ticker-item" id="tk-AAPL2">AAPL: ─</span>
+        <span class="ticker-item" id="tk-MSFT2">MSFT: ─</span>
+        <span class="ticker-item" id="tk-NVDA2">NVDA: ─</span>
+        <span class="ticker-item" id="tk-TSLA2">TSLA: ─</span>
+        <span class="ticker-item" id="tk-AMZN2">AMZN: ─</span>
+      </div>
+      <div class="ticker-time" id="marketTime">─</div>
+    </div>
+
+    <!-- ── MAIN LAYOUT ───────────────────────────────────────────── -->
+    <div class="dashboard-wrapper">
+      <!-- LEFT PANEL -->
+      <aside class="left-panel">
+        <!-- 내 자산 -->
+        <div class="panel-card asset-card">
+          <div class="panel-title"><i class="bi bi-wallet2"></i> 내 자산</div>
+          <div class="asset-row">
+            <span class="asset-label"><i class="bi bi-currency-won"></i> 원화</span>
+            <span class="asset-value" id="assetKrw">─</span>
+          </div>
+          <div class="asset-row">
+            <span class="asset-label"><i class="bi bi-currency-dollar"></i> 달러</span>
+            <span class="asset-value" id="assetUsd">─</span>
+          </div>
+          <div class="asset-row total-row">
+            <span class="asset-label"><i class="bi bi-bank"></i> 총 자산(환산)</span>
+            <span class="asset-value" id="assetTotal">─</span>
+          </div>
+          <div class="mt-2" id="stockHoldings"></div>
+        </div>
+
+        <!-- 예약 조건 -->
+        <div class="panel-card">
+          <div class="panel-title d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-bookmark-check"></i> 예약 조건</span>
+            <span class="badge bg-secondary" id="rsvCount">0</span>
+          </div>
+          <div id="rsvList" class="item-list">
+            <div class="empty-state">예약 없음</div>
+          </div>
+        </div>
+
+        <!-- 승인 요청 -->
+        <div class="panel-card">
+          <div class="panel-title d-flex justify-content-between align-items-center">
+            <span><i class="bi bi-bell-fill text-warning"></i> 승인 요청</span>
+            <span class="badge bg-warning text-dark" id="approvalCount">0</span>
+          </div>
+          <div id="approvalList" class="item-list">
+            <div class="empty-state">승인 대기 없음</div>
+          </div>
+        </div>
+
+        <!-- 로그 -->
+        <div class="panel-card">
+          <div class="panel-title"><i class="bi bi-journal-text"></i> 거래 로그</div>
+          <div id="logList" class="item-list log-list">
+            <div class="empty-state">로그 없음</div>
+          </div>
+        </div>
+      </aside>
+
+      <!-- CENTER: 시세 카드 -->
+      <main class="center-panel">
+        <div class="panel-title mb-3"><i class="bi bi-graph-up-arrow"></i> 실시간 시세</div>
+        <div class="stock-grid" id="stockGrid">
+          <!-- JS가 채움 -->
+        </div>
+
+        <!-- 환율 카드 -->
+        <div class="panel-card rate-card mt-3">
+          <div class="d-flex align-items-center gap-3">
+            <div class="rate-icon"><i class="bi bi-arrow-left-right"></i></div>
+            <div>
+              <div class="rate-label">USD / KRW 환율</div>
+              <div class="rate-value" id="rateValue">─</div>
+            </div>
+            <div id="rateChange" class="rate-change ms-auto">─</div>
+          </div>
+        </div>
+      </main>
+
+      <!-- RIGHT: 챗봇 -->
+      <aside class="right-panel">
+        <div class="panel-card chat-card h-100 d-flex flex-column">
+          <div class="panel-title"><i class="bi bi-robot"></i> AI 트레이딩 어시스턴트</div>
+          <div class="chat-examples">
+            <button class="ex-btn" onclick="sendExample('지금 AAPL 시세 알려줘')">AAPL 시세</button>
+            <button class="ex-btn" onclick="sendExample('현재 환율 알려줘')">환율 확인</button>
+            <button class="ex-btn" onclick="sendExample('내 잔고 알려줘')">잔고 확인</button>
+            <button class="ex-btn" onclick="sendExample('AAPL이 185 이하면 1주 매수해줘')">
+              조건 매수
+            </button>
+            <button class="ex-btn" onclick="sendExample('환율이 1370 이하면 100만원 환전해줘')">
+              조건 환전
+            </button>
+          </div>
+          <div class="chat-messages" id="chatMessages">
+            <div class="chat-msg bot">
+              <div class="chat-bubble">안녕하세요! 가상 트레이딩 봇입니다.<br />주식 매매, 환전, 시세 조회를 도와드립니다. 😊</div>
+            </div>
+          </div>
+          <div class="chat-input-area">
+            <textarea
+              id="chatInput"
+              class="chat-input"
+              placeholder="메시지를 입력하세요... (Enter 전송)"
+              rows="2"
+            ></textarea>
+            <button class="chat-send-btn" id="chatSendBtn" onclick="sendChat()">
+              <i class="bi bi-send-fill"></i>
+            </button>
+          </div>
+        </div>
+      </aside>
+    </div>
+    <!-- /dashboard-wrapper -->
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="/static/js/script.js"></script>
+  </body>
+</html>
