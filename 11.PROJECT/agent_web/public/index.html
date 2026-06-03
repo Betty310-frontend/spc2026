@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>금융 도우미 챗봇</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
+      crossorigin="anonymous"
+    />
+    <style>
+      body {
+        background: #f0f2f5;
+      }
+      #chat-box {
+        height: 65vh;
+        overflow-y: auto;
+        background: #fff;
+        border-radius: 12px;
+        padding: 1rem;
+      }
+      .bubble {
+        max-width: 75%;
+        padding: 0.6rem 1rem;
+        border-radius: 18px;
+        line-height: 1.5;
+        word-break: break-word;
+      }
+      .bubble-user {
+        white-space: pre-wrap;
+      }
+      /* 마크다운 렌더링 스타일 */
+      .bubble-bot p {
+        margin-bottom: 0.4rem;
+      }
+      .bubble-bot p:last-child {
+        margin-bottom: 0;
+      }
+      .bubble-bot ul,
+      .bubble-bot ol {
+        padding-left: 1.2rem;
+        margin-bottom: 0.4rem;
+      }
+      .bubble-bot li {
+        margin-bottom: 0.2rem;
+      }
+      .bubble-bot strong {
+        font-weight: 700;
+      }
+      .bubble-bot a {
+        color: #0d6efd;
+        text-decoration: underline;
+      }
+      .bubble-bot a:hover {
+        color: #0a58ca;
+      }
+      .bubble-bot hr {
+        border-color: #ced4da;
+        margin: 0.5rem 0;
+      }
+      .bubble-bot h1,
+      .bubble-bot h2,
+      .bubble-bot h3 {
+        font-size: 1rem;
+        font-weight: 700;
+        margin: 0.4rem 0;
+      }
+      .bubble-bot code {
+        background: #d0d7de;
+        border-radius: 4px;
+        padding: 0.1em 0.3em;
+        font-size: 0.9em;
+      }
+      .bubble-bot pre {
+        background: #d0d7de;
+        border-radius: 6px;
+        padding: 0.6rem;
+        overflow-x: auto;
+      }
+      .bubble-user {
+        background: #0d6efd;
+        color: #fff;
+        margin-left: auto;
+        border-bottom-right-radius: 4px;
+      }
+      .bubble-bot {
+        background: #e9ecef;
+        color: #212529;
+        border-bottom-left-radius: 4px;
+      }
+      .cursor::after {
+        content: "▌";
+        animation: blink 0.7s step-start infinite;
+      }
+      @keyframes blink {
+        50% {
+          opacity: 0;
+        }
+      }
+      /* 로딩 스피너 색상 */
+      .spinner-grow {
+        color: #6c757d;
+      }
+      /* 취소 버튼 전환 시 너비 고정 */
+      #send-btn {
+        min-width: 44px;
+        width: 44px;
+        height: 44px;
+        padding: 0;
+        transition: background-color 0.15s;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container py-4" style="max-width: 720px">
+      <h5 class="mb-3 text-center fw-bold">💰 금융 도우미 챗봇</h5>
+
+      <div id="chat-box" class="mb-3 shadow-sm"></div>
+
+      <form id="chat-form" class="d-flex gap-2">
+        <input
+          id="question"
+          type="text"
+          class="form-control"
+          placeholder="질문을 입력하세요 (예: 삼성전자 주가 알려줘)"
+          autocomplete="off"
+          required
+        />
+        <button id="send-btn" type="submit" class="btn btn-primary" title="전송">
+          <i class="bi bi-send-fill"></i>
+        </button>
+        <!-- type은 JS에서 streaming 중 'button'으로 전환 -->
+      </form>
+    </div>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="/static/js/script.js"></script>
+  </body>
+</html>
