@@ -69,7 +69,13 @@ chroma_db/
 history.json
 *.pdf
 *.txt
+*.mp3
+*.wav
+*.ogg
 
 # Ignore all files except requirements.txt
 !requirements.txt
 !**/requirements.txt
+
+# 임시 파일 폴더
+TEMP/
