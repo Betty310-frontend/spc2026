@@ -28,7 +28,7 @@ def fetch_news(query):
     soup = BeautifulSoup(xml, "xml")
 
     items = []
-    for item in soup.find_all("items")[:8]:
+    for item in soup.find_all("item")[:8]:
         items.append({
             "title": item.title.text,
             "link": item.link.text,
