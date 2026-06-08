@@ -1,0 +1,72 @@
+"""
+NSMC = Naver Sentiment Movie Corpus (네이버 영화 리뷰 감성 분석 데이터셋)
+"""
+
+import numpy as np
+from transformers import (
+    AutoModelForSequenceClassification,
+    AutoTokenizer,
+    Trainer,
+    TrainingArguments,
+)
+
+from datasets import load_dataset
+
+MODEL_NAME = "beomi/kcbert-base"
+tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
+
+ds = load_dataset('nsmc')
+
+train_ds = ds['train'].filter(lambda x: bool(x['document'])).shuffle(seed=42).select(range(2000))
+eval_ds = ds['test'].filter(lambda x: bool(x['document'])).shuffle(seed=42).select(range(500))
+
+print(f"학습 데이터 수: {len(train_ds)}, 평가 데이터 수: {len(eval_ds)}")
+
+print(f"예시: {train_ds[0]['document'][:30]}... -> {eval_ds[0]['document'][:30]}...")
+
+def tokenize(batch):
+    return tokenizer(batch['document'], padding="max_length", truncation=True)
+
+train_ds = train_ds.map(tokenize, batched=True)
+eval_ds = eval_ds.map(tokenize, batched=True)
+
+model=  AutoModelForSequenceClassification.from_pretrained(
+    MODEL_NAME, 
+    num_labels=2, 
+    id2label={0: "부정", 1: "긍정"}, 
+    label2id={"부정": 0, "긍정": 1}
+)
+
+def compute_metrics(eval_pred):
+    logits, labels = eval_pred
+    preds = np.argmax(logits, axis=-1)
+    
+    return {
+        "accuracy": float((preds == labels).mean())
+    }
+
+args = TrainingArguments(
+    output_dir="./results",
+    eval_strategy="epoch",
+    save_strategy="epoch",
+    per_device_train_batch_size=16,
+    per_device_eval_batch_size=32,
+    num_train_epochs=1,
+    logging_steps=25
+)
+
+trainer = Trainer(
+    model=model, 
+    args=args,
+    train_dataset=train_ds,
+    eval_dataset=eval_ds,
+    compute_metrics=compute_metrics
+)
+
+trainer.train()
+print(f"평가결과: {trainer.evaluate()}")
+
+save_path="./my_local_model"
+model.save_pretrained(save_path)
+tokenizer.save_pretrained(save_path)
+print(f"내 모델 저장 완료: {save_path}")
