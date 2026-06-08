@@ -12,17 +12,17 @@ from transformers import (
 
 from datasets import load_dataset
 
-MODEL_NAME = "beomi/kcbert-base"
+MODEL_NAME = "beomi/KcBERT-base"
 tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 
-ds = load_dataset('nsmc')
+ds = load_dataset('nsmc', trust_remote_code=True)
 
 train_ds = ds['train'].filter(lambda x: bool(x['document'])).shuffle(seed=42).select(range(2000))
 eval_ds = ds['test'].filter(lambda x: bool(x['document'])).shuffle(seed=42).select(range(500))
 
 print(f"학습 데이터 수: {len(train_ds)}, 평가 데이터 수: {len(eval_ds)}")
 
-print(f"예시: {train_ds[0]['document'][:30]}... -> {eval_ds[0]['document'][:30]}...")
+print(f"예시: {train_ds[0]['document']}... -> {eval_ds[0]['document']}...")
 
 def tokenize(batch):
     return tokenizer(batch['document'], padding="max_length", truncation=True)
